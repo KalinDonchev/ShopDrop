@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <th:block th:include="~{fragments/head}"></th:block>
+</head>
+<body>
+<div class="shop-drop" id="details-page">
+    <header>
+        <th:block th:include="~{fragments/navbar}"></th:block>
+    </header>
+    <main>
+        <div class="container">
+
+            <div class="card">
+                <div class="row">
+                    <aside class="col-sm-5 border-right">
+                        <article class="gallery-wrap">
+                            <div class="img-big-wrap">
+                                <div> <a href="#"><img th:src="${product.imageUrl}" width="450" height="400"></a></div>
+                            </div> <!-- slider-product.// -->
+
+                        </article> <!-- gallery-wrap .end// -->
+                    </aside>
+                    <aside class="col-sm-7">
+                        <article class="card-body p-5">
+
+                            <dt class="font-weight-bold">Name</dt>
+                            <h3 class="title mb-3" th:text="${product.name}"></h3>
+
+
+                            <dl class="item-property">
+                                <dt class="font-weight-bold">Description</dt>
+                                <dd><p th:text="${product.description}"></p></dd>
+                            </dl>
+                            <dl class="param param-feature">
+                                <dt class="font-weight-bold">Price</dt>
+                                <dd th:text="${product.price}"></dd>
+                            </dl>  <!-- item-property-hor .// -->
+                            <dl class="param param-feature">
+                                <dt class="font-weight-bold">Owner</dt>
+                                <dd>username</dd>
+                            </dl>  <!-- item-property-hor .// -->
+                            <hr>
+                            <a href="#" class="btn btn-lg btn-primary text-uppercase"> Send Email </a>
+                        </article> <!-- card-body.// -->
+                    </aside> <!-- col.// -->
+                </div> <!-- row.// -->
+            </div> <!-- card.// -->
+
+
+        </div>
+        <!--container.//-->
+
+
+
+    </main>
+    <footer>
+        <th:block th:include="~{fragments/footer}"></th:block>
+    </footer>
+</div>
+</body>
+</html>
+
