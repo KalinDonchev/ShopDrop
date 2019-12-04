@@ -16,6 +16,8 @@ public class User extends BaseEntity {
     private String password;
     @OneToMany(mappedBy = "user")
     private List<Product> products;
+    @OneToMany(mappedBy = "user")
+    private List<Review> reviews;
 
     public User() {
     }
@@ -52,8 +54,17 @@ public class User extends BaseEntity {
         this.products = products;
     }
 
+    public List<Review> getReviews() {
+        return reviews;
+    }
+
+    public void setReviews(List<Review> reviews) {
+        this.reviews = reviews;
+    }
+
     @Override
     public String toString() {
         return this.getUsername();
     }
+
 }

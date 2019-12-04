@@ -17,7 +17,7 @@ import org.springframework.web.servlet.ModelAndView;
 import javax.servlet.http.HttpSession;
 
 @Controller
-@RequestMapping("/user")
+@RequestMapping("/auth")
 public class AuthController extends BaseController {
 
     private final AuthService authService;
@@ -55,7 +55,7 @@ public class AuthController extends BaseController {
             session.setAttribute("user", login);
             return super.redirect("/home");
         } catch (Exception e) {
-            return super.redirect("/user/login");
+            return super.redirect("/auth/login");
         }
 
     }

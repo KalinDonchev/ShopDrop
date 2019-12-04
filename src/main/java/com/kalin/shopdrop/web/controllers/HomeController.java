@@ -2,7 +2,7 @@ package com.kalin.shopdrop.web.controllers;
 
 import com.kalin.shopdrop.service.models.ProductServiceModel;
 import com.kalin.shopdrop.service.services.ProductService;
-import com.kalin.shopdrop.web.models.ProductViewModel;
+import com.kalin.shopdrop.web.models.view.ProductViewModel;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -11,7 +11,6 @@ import org.springframework.web.servlet.ModelAndView;
 
 import java.util.List;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 @Controller
 public class HomeController extends BaseController {

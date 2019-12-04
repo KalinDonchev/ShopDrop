@@ -1,17 +1,16 @@
-package com.kalin.shopdrop.web.models;
+package com.kalin.shopdrop.web.models.view;
 
 import java.math.BigDecimal;
 
-public class ProductViewModel {
+public class ProductAllViewModel {
 
     private String id;
     private String name;
-    private String description;
     private BigDecimal price;
     private String imageUrl;
     private String user;
 
-    public ProductViewModel() {
+    public ProductAllViewModel() {
     }
 
     public String getId() {
@@ -28,14 +27,6 @@ public class ProductViewModel {
 
     public void setName(String name) {
         this.name = name;
-    }
-
-    public String getDescription() {
-        return description;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
     }
 
     public BigDecimal getPrice() {

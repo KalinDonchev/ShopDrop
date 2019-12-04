@@ -12,6 +12,7 @@ public class ProductServiceModel {
     private String imageUrl;
     private String user;
 
+
     public ProductServiceModel() {
     }
 
@@ -70,4 +71,6 @@ public class ProductServiceModel {
     public void setUser(String user) {
         this.user = user;
     }
+
+
 }

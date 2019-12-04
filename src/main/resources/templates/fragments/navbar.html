@@ -10,10 +10,10 @@
             <div id="navb" class="navbar-collapse collapse hide">
                 <ul class="nav navbar-nav ml-auto">
                     <li class="nav-item">
-                        <a class="nav-link" th:href="@{/user/register}"><span class="fas fa-user"></span> Sign Up</a>
+                        <a class="nav-link" th:href="@{/auth/register}"><span class="fas fa-user"></span> Sign Up</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" th:href="@{/user/login}"><span class="fas fa-sign-in-alt"></span> Login</a>
+                        <a class="nav-link" th:href="@{/auth/login}"><span class="fas fa-sign-in-alt"></span> Login</a>
                     </li>
                 </ul>
             </div>
@@ -30,10 +30,13 @@
             <div id="navb" class="navbar-collapse collapse hide">
                 <ul class="nav navbar-nav ml-auto">
                     <li class="nav-item">
-                        <a class="nav-link" href="#">News</a>
+                        <a class="nav-link" th:href="@{/news/all}">News</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="#">Add Review</a>
+                        <a class="nav-link" tH:href="@{/review/all}">Reviews</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" th:href="@{/review/add}">Add Review</a>
                     </li>
                     <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -48,20 +51,50 @@
                         </div>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="#">My Products</a>
+                        <a class="nav-link" th:href="@{/product/all/{username}(username=${session.user.username})}">My Products</a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" th:href="@{/product/add}">Add Product</a>
                     </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="#">Edit Profile</a>
+<!--                    <li class="nav-item">-->
+<!--                        <a class="nav-link" th:href="@{/user/profile}">My Profile</a>-->
+<!--                    </li>-->
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            Profile
+                        </a>
+                        <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                            <a class="dropdown-item"  th:href="@{/user/profile}">My Profile</a>
+                            <a class="dropdown-item" href="#">Edit Profile</a>
+                        </div>
+                    </li>
+<!--                    <li class="nav-item">-->
+<!--                        <a class="nav-link" href="#">Edit Profile</a>-->
+<!--                    </li>-->
+<!--                    <li class="nav-item">-->
+<!--                        <a class="nav-link" th:href="@{/category/add}">Add Category</a>-->
+<!--                    </li>-->
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            Moderator
+                        </a>
+                        <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                            <a class="dropdown-item" th:href="@{/category/add}">Add Category</a>
+                            <a class="dropdown-item" th:href="@{/category/all}">All categories</a>
+                            <a class="dropdown-item" href="#">Edit category</a>
+                            <a class="dropdown-item" href="#">Delete category</a>
+                            <div class="dropdown-divider"></div>
+                            <a class="dropdown-item" href="#">All users</a>
+                            <div class="dropdown-divider"></div>
+                            <a class="dropdown-item" th:href="@{/news/add}">Add news</a>
+                            <a class="dropdown-item" th:href="@{/news/edit}">Edit news</a>
+                            <a class="dropdown-item" th:href="@{/news/delete}">Delete news</a>
+                        </div>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" href="#">Logout</a>
                     </li>
-                    <li class="nav-item">
-                        <a class="nav-link" th:href="@{/category/add}">Add Category</a>
-                    </li>
+
                 </ul>
             </div>
         </nav>

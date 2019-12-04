@@ -40,6 +40,7 @@
 		font-family: 'Roboto', sans-serif;
 	}
 
+
 	#login-page{
 		color: #fff;
 		background: #63738a;
@@ -53,6 +54,26 @@
 #details-page{
 	background: #63738a;
 }
+
+#profile-page{
+	color: black;
+	background: #63738a;
+	font-family: 'Roboto', sans-serif;
+}
+
+#review-page{
+	color: #fff;
+	background: #63738a;
+	font-family: 'Roboto', sans-serif;
+}
+
+#profile-details-container h1{
+	font-size: 40px;
+}
+#profile-details-container h2{
+	font-size: 25px;
+}
+
 
 .text-gray {
 	color: #aaa;
@@ -139,4 +160,20 @@
 	.signup-form form a:hover{
 		text-decoration: underline;
 	}
+
+.post {
+	border-bottom:1px solid #DDD
+}
+.post-title {
+	color:#662D91;
+}
+.post .glyphicon {
+	margin-right:5px;
+}
+.post-header-line {
+	border-top:1px solid #DDD;border-bottom:1px solid #DDD;padding:5px 0px 5px 15px;font-size: 12px;
+}
+.post-content {
+	padding-bottom: 15px;padding-top: 15px;
+}
 

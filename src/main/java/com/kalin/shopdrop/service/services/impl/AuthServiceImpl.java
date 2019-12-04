@@ -7,6 +7,7 @@ import com.kalin.shopdrop.service.models.UserServiceModel;
 import com.kalin.shopdrop.service.services.AuthService;
 import com.kalin.shopdrop.service.services.AuthValidationService;
 import com.kalin.shopdrop.service.services.HashingService;
+import javassist.NotFoundException;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -47,18 +48,14 @@ public class AuthServiceImpl implements AuthService {
     @Override
     public UserLoginServiceModel login(UserLoginServiceModel userLoginServiceModel) throws Exception {
         String passwordHash = this.hashingService.hash(userLoginServiceModel.getPassword());
-        try {
-            Optional<User> user = this.userRepository.findByUsernameAndPassword(userLoginServiceModel.getUsername(), passwordHash);
+
+            User user = this.userRepository.findByUsernameAndPassword(userLoginServiceModel.getUsername(), passwordHash).orElseThrow(() -> new NotFoundException("No such user"));
             UserLoginServiceModel mapped = this.modelMapper.map(user, UserLoginServiceModel.class);
-            //FIX MAP
-            if (user.isPresent()){
-                mapped.setUsername(user.get().getUsername());
-                mapped.setPassword(user.get().getPassword());
-            }
+            mapped.setUsername(user.getUsername());
+            mapped.setPassword(user.getPassword());
+
             return mapped;
-        } catch (Exception e) {
-            throw new Exception("Invalid user");
-        }
+
     }
 
 

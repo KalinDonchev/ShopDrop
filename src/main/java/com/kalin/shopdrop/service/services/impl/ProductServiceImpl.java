@@ -16,6 +16,7 @@ import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -49,6 +50,25 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
+    public ProductServiceModel editProduct(String id, ProductServiceModel productServiceModel) throws NotFoundException {
+        Product product = this.productRepository.findById(id).orElseThrow(() -> new NotFoundException("Not found"));
+        CategoryServiceModel categoryServiceModel = this.categoryService.getByName(productServiceModel.getCategory().getName());
+        Category category = this.modelMapper.map(categoryServiceModel, Category.class);
+        product.setName(productServiceModel.getName());
+        product.setDescription(productServiceModel.getDescription());
+        product.setPrice(productServiceModel.getPrice());
+        product.setCategory(category);
+        this.productRepository.save(product);
+        return this.modelMapper.map(product, ProductServiceModel.class);
+    }
+
+    @Override
+    public void deleteProduct(String id) throws NotFoundException {
+        Product product = this.productRepository.findById(id).orElseThrow(() -> new NotFoundException("No such product"));
+        this.productRepository.delete(product);
+    }
+
+    @Override
     public List<ProductServiceModel> getAll() {
         return this.productRepository.findAll().stream()
                 .map(p -> this.modelMapper.map(p, ProductServiceModel.class))
@@ -70,5 +90,13 @@ public class ProductServiceImpl implements ProductService {
                 .stream()
                 .map(product -> this.modelMapper.map(product, ProductServiceModel.class))
                 .collect(Collectors.toList());
+    }
+
+    @Override
+    @Transactional
+    public List<ProductServiceModel> getAllByUserUsername(String username) throws NotFoundException {
+        UserServiceModel userServiceModel = this.userService.getByUsername(username);
+        List<ProductServiceModel> products = userServiceModel.getProducts();
+        return products;
     }
 }

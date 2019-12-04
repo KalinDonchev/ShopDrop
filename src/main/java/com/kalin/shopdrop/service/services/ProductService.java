@@ -9,10 +9,16 @@ public interface ProductService {
 
     ProductServiceModel addProduct(ProductServiceModel productServiceModel) throws NotFoundException;
 
+    ProductServiceModel editProduct(String id, ProductServiceModel productServiceModel) throws NotFoundException;
+
+    void deleteProduct(String id) throws NotFoundException;
+
     List<ProductServiceModel> getAll();
 
     ProductServiceModel getById(String id) throws NotFoundException;
 
     List<ProductServiceModel> getAllByCategory(String category);
+
+    List<ProductServiceModel> getAllByUserUsername(String username) throws NotFoundException;
 
 }

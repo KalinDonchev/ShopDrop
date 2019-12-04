@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html lang="en" xmlns="http://www.w3.org/1999/xhtml"
-      xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+      xmlns:th="http://www.thymeleaf.org">
 <head>
     <th:block th:include="~{fragments/head}"></th:block>
 </head>
@@ -29,9 +29,11 @@
                 <td class="col-md-3 text-center" th:text="${product.name}"></td>
                 <td class="col-md-2 text-center" th:text="${product.price}"></td>
                 <td class="col-md-3 text-center">
-                    <a th:href="@{/products/details/{id}(id=${product.id})}" class="btn btn-secondary font-weight-bold text-white">Details</a>
-                    <a th:href="@{/products/edit/{id}(id=${product.id})}" class="btn btn-success font-weight-bold text-white">Edit</a>
-                    <a th:href="@{/products/delete/{id}(id=${product.id})}" class="btn btn-danger font-weight-bold text-white">Delete</a>
+                    <a th:href="@{/product/details/{id}(id=${product.id})}" class="btn btn-secondary font-weight-bold text-white">Details</a>
+                    <th:block th:if="${session.user.username == product.user}">
+                    <a th:href="@{/product/edit/{id}(id=${product.id})}" class="btn btn-success font-weight-bold text-white">Edit</a>
+                    <a th:href="@{/product/delete/{id}(id=${product.id})}" class="btn btn-danger font-weight-bold text-white">Delete</a>
+                    </th:block>
                 </td>
             </tr>
         </th:block>

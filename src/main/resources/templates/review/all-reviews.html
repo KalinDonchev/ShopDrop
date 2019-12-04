@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <th:block th:include="~{fragments/head}"></th:block>
+</head>
+<body>
+<div class="shop-drop" id="all-reviews-page">
+    <header>
+        <th:block th:include="~{fragments/navbar}"></th:block>
+    </header>
+    <main>
+<!--        <th:block th:each="review : ${reviews}">-->
+<!--            <div class="row">-->
+<!--                <div class="col-md-9">-->
+<!--                    <div class="row">-->
+<!--                        <div class="col-md-12 post">-->
+<!--                            <div class="row">-->
+<!--                                <div class="col-md-12">-->
+<!--                                    <h4>-->
+<!--                                        <strong class="post-title" th:text="${review.title}"></strong>-->
+<!--                                    </h4>-->
+<!--                                </div>-->
+<!--                            </div>-->
+<!--                            <div class="row">-->
+<!--                                <div class="col-md-12 post-header-line">-->
+<!--                                    <span class="glyphicon glyphicon-user"></span>by <h4 th:text="${review.user}"></h4>-->
+<!--                                </div>-->
+<!--                            </div>-->
+<!--                            <div class="row post-content">-->
+<!--                                <div class="col-md-12">-->
+<!--                                    <p th:text="${review.text}"></p>-->
+<!--                                </div>-->
+<!--                            </div>-->
+<!--                        </div>-->
+<!--                    </div>-->
+<!--                </div>-->
+<!--            </div>-->
+<!--        </th:block>-->
+
+        <div class="container">
+            <th:block th:each="review : ${reviews}">
+
+                <div class="well">
+                    <div class="media">
+                        <div class="media-body">
+                            <h4 class="media-heading" th:text="${review.title}"></h4>
+                            <p class="text-left" th:text="'By ' + ${review.user}"></p>
+                            <p th:text="${review.text}"></p>
+                            <hr>
+                        </div>
+                    </div>
+                </div>
+
+            </th:block>
+        </div>
+
+
+    </main>
+    <footer>
+        <th:block th:include="~{fragments/footer}"></th:block>
+    </footer>
+</div>
+</body>
+
+</html>

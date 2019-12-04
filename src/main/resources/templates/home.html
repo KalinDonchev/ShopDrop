@@ -51,7 +51,7 @@
                                             <p class="font-italic text-muted mb-0 small" th:text="${product.description}"></p>
                                             <div class="d-flex align-items-center justify-content-between mt-1">
                                                 <h6 class="font-weight-bold my-2" th:text="${product.price}"></h6>
-                                                <a class="text-gray" href="#" th:text="${product.user}"></a>
+                                                <a class="text-gray" th:href="@{/product/all/{username}(username=${product.user})}" th:text="${product.user}"></a>
                                             </div>
                                         </div><a id="none" th:href="@{/product/details/{id}(id=${product.id})}"><img
                                             th:src="${product.imageUrl}"

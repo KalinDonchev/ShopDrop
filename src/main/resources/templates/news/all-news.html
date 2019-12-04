@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <th:block th:include="~{fragments/head}"></th:block>
+</head>
+<body>
+<div class="shop-drop" id="news-page">
+    <header>
+        <th:block th:include="~{fragments/navbar}"></th:block>
+    </header>
+    <main>
+        <div class="container">
+
+            <th:block th:each="news : ${allNews}">
+            <div class="row">
+                <div class="col-md-9">
+                    <div class="row">
+                        <div class="col-md-12 post">
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <h4>
+                                        <strong class="post-title" th:text="${news.title}"></strong>
+                                    </h4>
+                                </div>
+                            </div>
+                            <div class="row post-content">
+                                <div class="col-md-12">
+                                    <p th:text="${news.text}"></p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            </th:block>
+
+        </div>
+
+    </main>
+    <footer>
+        <th:block th:include="~{fragments/footer}"></th:block>
+    </footer>
+</div>
+</body>
+
+</html>

@@ -1,11 +1,14 @@
 package com.kalin.shopdrop.service.services.impl;
 
 import com.kalin.shopdrop.data.models.Product;
+import com.kalin.shopdrop.data.models.Review;
 import com.kalin.shopdrop.data.models.User;
 import com.kalin.shopdrop.data.repositories.UserRepository;
 import com.kalin.shopdrop.service.models.ProductServiceModel;
+import com.kalin.shopdrop.service.models.ReviewServiceModel;
 import com.kalin.shopdrop.service.models.UserServiceModel;
 import com.kalin.shopdrop.service.services.ProductService;
+import com.kalin.shopdrop.service.services.ReviewService;
 import com.kalin.shopdrop.service.services.UserService;
 import javassist.NotFoundException;
 import org.modelmapper.ModelMapper;
@@ -14,19 +17,20 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.Optional;
 
 @Service
 public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
     private final ProductService productService;
+    private final ReviewService reviewService;
     private final ModelMapper modelMapper;
 
     @Autowired
-    public UserServiceImpl(UserRepository userRepository, ProductService productService, ModelMapper modelMapper) {
+    public UserServiceImpl(UserRepository userRepository, ProductService productService, ReviewService reviewService, ModelMapper modelMapper) {
         this.userRepository = userRepository;
         this.productService = productService;
+        this.reviewService = reviewService;
         this.modelMapper = modelMapper;
     }
 
@@ -45,8 +49,26 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    public void addReviewToUser(String username, ReviewServiceModel reviewServiceModel) throws NotFoundException {
+        User user = this.userRepository.findByUsername(reviewServiceModel.getUser()).orElseThrow(() -> new NotFoundException("No such user"));
+        this.reviewService.addReview(reviewServiceModel);
+        Review review = this.modelMapper.map(reviewServiceModel, Review.class);
+        review.setUser(user);
+        List<Review> reviews = user.getReviews();
+        reviews.add(review);
+        this.userRepository.save(user);
+    }
+
+    @Override
+    @Transactional
     public UserServiceModel getByUsername(String username) throws NotFoundException {
         User user = this.userRepository.findByUsername(username).orElseThrow(() -> new NotFoundException("No such user"));
+        return this.modelMapper.map(user, UserServiceModel.class);
+    }
+
+    @Override
+    public UserServiceModel getById(String id) throws NotFoundException {
+        User user = this.userRepository.findById(id).orElseThrow(() -> new NotFoundException("user not found"));
         return this.modelMapper.map(user, UserServiceModel.class);
     }
 }
