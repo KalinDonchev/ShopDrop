@@ -12,21 +12,14 @@
     </header>
     <main>
         <div class="signup-form">
-            <form th:action="@{/auth/login}" th:method="post">
-                <h2>Login</h2>
-                <p class="hint-text">Send Email</p>
+            <form th:action="@{/category/delete/{id}(id=${categoryId})}" th:method="post">
+                <h2>Delete Category</h2>
                 <div class="form-group">
-                    <input type="text" class="form-control" name="email" placeholder="Email"
-                           required="required" disabled>
+                    <input type="text" class="form-control" name="name" placeholder="Name"
+                           required="required" th:value="${category.name}" disabled>
                 </div>
-
                 <div class="form-group">
-                    <textarea type="text" class="form-control" name="message" placeholder="Description" rows="5" required="required"></textarea>
-                </div>
-
-
-                <div class="form-group">
-                    <button type="submit" class="btn btn-success btn-lg btn-block">Send Now</button>
+                    <button type="submit" class="btn btn-success btn-lg btn-block" >Delete Category</button>
                 </div>
             </form>
 

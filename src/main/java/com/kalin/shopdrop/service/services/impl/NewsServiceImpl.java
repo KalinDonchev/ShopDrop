@@ -4,6 +4,7 @@ import com.kalin.shopdrop.data.models.News;
 import com.kalin.shopdrop.data.repositories.NewsRepository;
 import com.kalin.shopdrop.service.models.NewsServiceModel;
 import com.kalin.shopdrop.service.services.NewsService;
+import javassist.NotFoundException;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -32,8 +33,31 @@ public class NewsServiceImpl implements NewsService {
     }
 
     @Override
+    public void deleteNews(String id) throws NotFoundException {
+        News news = this.newsRepository.findById(id).orElseThrow(() -> new NotFoundException("No such news"));
+        this.newsRepository.delete(news);
+    }
+
+    @Override
     public List<NewsServiceModel> getAll() {
         List<News> news = this.newsRepository.findAll();
-        return news.stream().map(n -> this.modelMapper.map(n,NewsServiceModel.class)).collect(Collectors.toList());
+        return news.stream().map(n -> this.modelMapper.map(n, NewsServiceModel.class)).collect(Collectors.toList());
     }
+
+    @Override
+    public NewsServiceModel getById(String id) throws NotFoundException {
+        News news = this.newsRepository.findById(id).orElseThrow(() -> new NotFoundException("No such news"));
+        return this.modelMapper.map(news, NewsServiceModel.class);
+    }
+
+    @Override
+    public NewsServiceModel editNews(String id, NewsServiceModel newsServiceModel) throws NotFoundException {
+        News news = this.newsRepository.findById(id).orElseThrow(() -> new NotFoundException("No such news"));
+        news.setTitle(newsServiceModel.getTitle());
+        news.setText(newsServiceModel.getText());
+        this.newsRepository.save(news);
+        return this.modelMapper.map(news, NewsServiceModel.class);
+    }
+
+
 }

@@ -69,6 +69,16 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
+    public void deleteAllForCategory(String categoryId) throws NotFoundException {
+        CategoryServiceModel categoryServiceModel = this.categoryService.getById(categoryId);
+        List<ProductServiceModel> allProducts = this.getAllByCategory(categoryServiceModel.getName());
+        for (ProductServiceModel productServiceModel : allProducts) {
+            Product product = this.productRepository.findById(productServiceModel.getId()).orElseThrow(() -> new NotFoundException("No such product"));
+            this.productRepository.delete(product);
+        }
+    }
+
+    @Override
     public List<ProductServiceModel> getAll() {
         return this.productRepository.findAll().stream()
                 .map(p -> this.modelMapper.map(p, ProductServiceModel.class))
@@ -99,4 +109,7 @@ public class ProductServiceImpl implements ProductService {
         List<ProductServiceModel> products = userServiceModel.getProducts();
         return products;
     }
+
+
+
 }

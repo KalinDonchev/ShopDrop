@@ -45,5 +45,17 @@ public class ReviewServiceImpl implements ReviewService {
         return reviews.stream().map(r -> this.modelMapper.map(r, ReviewServiceModel.class)).collect(Collectors.toList());
     }
 
+    @Override
+    public ReviewServiceModel getById(String id) throws NotFoundException {
+        Review review = this.reviewRepository.findById(id).orElseThrow(() -> new NotFoundException("Review not found"));
+        return this.modelMapper.map(review, ReviewServiceModel.class);
+    }
+
+    @Override
+    public void deleteReview(String id) throws NotFoundException {
+        Review review = this.reviewRepository.findById(id).orElseThrow(() -> new NotFoundException("No such review"));
+        this.reviewRepository.delete(review);
+    }
+
 
 }

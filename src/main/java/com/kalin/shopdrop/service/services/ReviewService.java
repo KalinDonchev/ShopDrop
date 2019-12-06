@@ -11,4 +11,7 @@ public interface ReviewService {
 
     List<ReviewServiceModel> getAll();
 
+    ReviewServiceModel getById(String id) throws NotFoundException;
+
+    void deleteReview(String id) throws NotFoundException;
 }

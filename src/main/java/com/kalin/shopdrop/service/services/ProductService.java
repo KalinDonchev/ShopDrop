@@ -13,6 +13,8 @@ public interface ProductService {
 
     void deleteProduct(String id) throws NotFoundException;
 
+    void deleteAllForCategory(String categoryId) throws NotFoundException;
+
     List<ProductServiceModel> getAll();
 
     ProductServiceModel getById(String id) throws NotFoundException;

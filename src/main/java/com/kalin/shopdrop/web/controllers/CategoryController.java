@@ -4,6 +4,7 @@ import com.kalin.shopdrop.service.models.CategoryServiceModel;
 import com.kalin.shopdrop.service.services.CategoryService;
 import com.kalin.shopdrop.web.models.AddCategoryModel;
 import com.kalin.shopdrop.web.models.view.CategoryAllViewModel;
+import javassist.NotFoundException;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -45,6 +46,26 @@ public class CategoryController extends BaseController {
         modelAndView.addObject("categories", categories);
         return super.view("category/all-categories", modelAndView);
     }
+
+    @GetMapping("/delete/{id}")
+    public ModelAndView deleteCateogory(@PathVariable String id, ModelAndView modelAndView){
+        CategoryServiceModel categoryServiceModel = this.categoryService.getById(id);
+        AddCategoryModel category = this.modelMapper.map(categoryServiceModel, AddCategoryModel.class);
+        category.setName(categoryServiceModel.getName());
+
+        modelAndView.addObject("category", category);
+        modelAndView.addObject("categoryId", id);
+
+        return super.view("category/delete-category", modelAndView);
+
+    }
+
+    @PostMapping("/delete/{id}")
+    public ModelAndView deleteProductConfirm(@PathVariable String id) throws NotFoundException {
+        this.categoryService.deleteCategory(id);
+        return super.redirect("/home");
+    }
+
 
     // LOAD ASYNC CATEGORIES
     @GetMapping("/fetch")
