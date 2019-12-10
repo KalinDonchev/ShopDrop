@@ -7,11 +7,11 @@ import java.util.List;
 
 public interface ReviewService {
 
-    ReviewServiceModel addReview(ReviewServiceModel reviewServiceModel) throws NotFoundException;
+    ReviewServiceModel addReview(ReviewServiceModel reviewServiceModel);
 
     List<ReviewServiceModel> getAll();
 
-    ReviewServiceModel getById(String id) throws NotFoundException;
+    ReviewServiceModel getById(String id);
 
-    void deleteReview(String id) throws NotFoundException;
+    void deleteReview(String id);
 }

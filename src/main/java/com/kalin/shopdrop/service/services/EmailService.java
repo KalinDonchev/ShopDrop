@@ -4,6 +4,6 @@ import javassist.NotFoundException;
 
 public interface EmailService {
 
-    void sendEmail(String toUser, String fromUser, String text, String productName) throws NotFoundException;
+    void sendEmail(String toUser, String fromUser, String text, String productName);
 
 }

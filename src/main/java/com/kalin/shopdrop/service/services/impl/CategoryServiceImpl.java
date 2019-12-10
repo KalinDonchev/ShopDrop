@@ -2,6 +2,7 @@ package com.kalin.shopdrop.service.services.impl;
 
 import com.kalin.shopdrop.data.models.Category;
 import com.kalin.shopdrop.data.repositories.CategoryRepository;
+import com.kalin.shopdrop.errors.CategoryNotFoundException;
 import com.kalin.shopdrop.service.models.CategoryServiceModel;
 import com.kalin.shopdrop.service.services.CategoryService;
 import com.kalin.shopdrop.service.services.ProductService;
@@ -60,9 +61,9 @@ public class CategoryServiceImpl implements CategoryService {
     }
 
     @Override
-    public void deleteCategory(String id) throws NotFoundException {
+    public void deleteCategory(String id) {
         this.productService.deleteAllForCategory(id);
-        Category category = this.categoryRepository.findById(id).orElseThrow(() -> new NotFoundException("No such category"));
+        Category category = this.categoryRepository.findById(id).orElseThrow(() -> new CategoryNotFoundException("No such category"));
         this.categoryRepository.delete(category);
     }
 }

@@ -7,11 +7,11 @@ import javassist.NotFoundException;
 
 public interface UserService {
 
-    void addProductToUser(String username, ProductServiceModel productServiceModel) throws NotFoundException;
+    void addProductToUser(String username, ProductServiceModel productServiceModel);
 
-    void addReviewToUser(String username, ReviewServiceModel reviewServiceModel) throws NotFoundException;
+    void addReviewToUser(String username, ReviewServiceModel reviewServiceModel);
 
-    UserServiceModel getByUsername(String username) throws NotFoundException;
+    UserServiceModel getByUsername(String username);
 
-    UserServiceModel getById(String id) throws NotFoundException;
+    UserServiceModel getById(String id);
 }

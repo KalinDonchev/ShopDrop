@@ -15,12 +15,6 @@ $(document).ready(function () {
                 if (json.length === 0) {
                     $('#products-list').append(`<h1 class="text-center font-weight-bold">There are no products in the ${category} category.</h1>`)
                 } else {
-                    // for (let i = 0; i < json.length; i += 3) {
-                    //     $('#products-list').append('<li class="list-group-item">');
-                    //     if (i < json.length) $('#products-list .list-group-item:last-child').append(formatProduct(json[i]));
-                    //     if (i + 1 < json.length) $('#products-list .list-group-item:last-child').append(formatProduct(json[i + 1]));
-                    //     if (i + 2 < json.length) $('#products-list .list-group-item:last-child').append(formatProduct(json[i + 2]));
-                    // }
                     for (let i = 0; i < json.length; i++) {
                         $('#products-list').append('<li class="list-group-item">');
                         if (i < json.length) $('#products-list .list-group-item:last-child').append(formatProduct(json[i]));
@@ -67,26 +61,3 @@ const formatProduct = (product) => {
 //
 // });
 
-
-// fetch(productUrlAll)
-//     .then((response) => response.json())
-//     .then((json) => {
-//         $('#products-list').empty();
-//
-//         if (json.length === 0) {
-//             $('#products-list').append(`<h1 class="text-center font-weight-bold">There are no products in the ${category} category.</h1>`)
-//         } else {
-//             for (let i = 0; i < json.length; i += 3) {
-//                 $('#products-list').append('<li class="list-group-item">');
-//                 if (i < json.length) $('#products-list .list-group-item:last-child').append(formatProduct(json[i]));
-//                 if (i + 1 < json.length) $('#products-list .list-group-item:last-child').append(formatProduct(json[i + 1]));
-//                 if (i + 2 < json.length) $('#products-list .list-group-item:last-child').append(formatProduct(json[i + 2]));
-//             }
-//         }
-//     });
-
-
-// $(document).on("click", ".addSo", function(){
-//     var newOption = "<option value=''>Dynamic Entry</option>";
-//     $("#selectmenu").append(newOption).selectmenu('refresh');
-// });

@@ -147,12 +147,6 @@ public class ProductController extends BaseController {
     @GetMapping("/fetch/{category}")
     @ResponseBody
     public List<ProductViewModel> fetchByCategory(@PathVariable String category) {
-//        if (category.equals("all")) {
-//            return this.productService.getAll()
-//                    .stream()
-//                    .map(product -> this.modelMapper.map(product, ProductViewModel.class))
-//                    .collect(Collectors.toList());
-//        }
 
         List<ProductViewModel> collect = this.productService.getAllByCategory(category)
                 .stream()

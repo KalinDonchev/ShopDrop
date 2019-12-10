@@ -7,20 +7,20 @@ import java.util.List;
 
 public interface ProductService {
 
-    ProductServiceModel addProduct(ProductServiceModel productServiceModel) throws NotFoundException;
+    ProductServiceModel addProduct(ProductServiceModel productServiceModel);
 
-    ProductServiceModel editProduct(String id, ProductServiceModel productServiceModel) throws NotFoundException;
+    ProductServiceModel editProduct(String id, ProductServiceModel productServiceModel);
 
-    void deleteProduct(String id) throws NotFoundException;
+    void deleteProduct(String id);
 
-    void deleteAllForCategory(String categoryId) throws NotFoundException;
+    void deleteAllForCategory(String categoryId);
 
     List<ProductServiceModel> getAll();
 
-    ProductServiceModel getById(String id) throws NotFoundException;
+    ProductServiceModel getById(String id);
 
     List<ProductServiceModel> getAllByCategory(String category);
 
-    List<ProductServiceModel> getAllByUserUsername(String username) throws NotFoundException;
+    List<ProductServiceModel> getAllByUserUsername(String username);
 
 }

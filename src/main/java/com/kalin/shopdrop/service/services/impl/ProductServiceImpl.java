@@ -5,6 +5,8 @@ import com.kalin.shopdrop.data.models.Product;
 import com.kalin.shopdrop.data.models.User;
 import com.kalin.shopdrop.data.repositories.CategoryRepository;
 import com.kalin.shopdrop.data.repositories.ProductRepository;
+import com.kalin.shopdrop.errors.ProductAlreadyExistsException;
+import com.kalin.shopdrop.errors.ProductNotFoundException;
 import com.kalin.shopdrop.service.models.CategoryServiceModel;
 import com.kalin.shopdrop.service.models.ProductServiceModel;
 import com.kalin.shopdrop.service.models.UserServiceModel;
@@ -38,10 +40,17 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public ProductServiceModel addProduct(ProductServiceModel productServiceModel) throws NotFoundException {
+    public ProductServiceModel addProduct(ProductServiceModel productServiceModel) {
         //VALIDATE
+        Product product = this.productRepository
+                .findByName(productServiceModel.getName())
+                .orElse(null);
 
-        Product product = this.modelMapper.map(productServiceModel, Product.class);
+        if (product != null) {
+            throw new ProductAlreadyExistsException("Product with this name already exists");
+        }
+
+        product = this.modelMapper.map(productServiceModel, Product.class);
         UserServiceModel userServiceModel = this.userService.getByUsername(productServiceModel.getUser());
         product.setUser(this.modelMapper.map(userServiceModel, User.class));
         this.productRepository.saveAndFlush(product);
@@ -50,8 +59,8 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public ProductServiceModel editProduct(String id, ProductServiceModel productServiceModel) throws NotFoundException {
-        Product product = this.productRepository.findById(id).orElseThrow(() -> new NotFoundException("Not found"));
+    public ProductServiceModel editProduct(String id, ProductServiceModel productServiceModel) {
+        Product product = this.productRepository.findById(id).orElseThrow(() -> new ProductNotFoundException("No such product"));
         CategoryServiceModel categoryServiceModel = this.categoryService.getByName(productServiceModel.getCategory().getName());
         Category category = this.modelMapper.map(categoryServiceModel, Category.class);
         product.setName(productServiceModel.getName());
@@ -63,17 +72,17 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public void deleteProduct(String id) throws NotFoundException {
-        Product product = this.productRepository.findById(id).orElseThrow(() -> new NotFoundException("No such product"));
+    public void deleteProduct(String id) {
+        Product product = this.productRepository.findById(id).orElseThrow(() -> new ProductNotFoundException("No such product"));
         this.productRepository.delete(product);
     }
 
     @Override
-    public void deleteAllForCategory(String categoryId) throws NotFoundException {
+    public void deleteAllForCategory(String categoryId) {
         CategoryServiceModel categoryServiceModel = this.categoryService.getById(categoryId);
         List<ProductServiceModel> allProducts = this.getAllByCategory(categoryServiceModel.getName());
         for (ProductServiceModel productServiceModel : allProducts) {
-            Product product = this.productRepository.findById(productServiceModel.getId()).orElseThrow(() -> new NotFoundException("No such product"));
+            Product product = this.productRepository.findById(productServiceModel.getId()).orElseThrow(() -> new ProductNotFoundException("No such product"));
             this.productRepository.delete(product);
         }
     }
@@ -86,8 +95,8 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public ProductServiceModel getById(String id) throws NotFoundException {
-        Product product = this.productRepository.findById(id).orElseThrow(() -> new NotFoundException("Product not found"));
+    public ProductServiceModel getById(String id) {
+        Product product = this.productRepository.findById(id).orElseThrow(() -> new ProductNotFoundException("No such product"));
         return this.modelMapper.map(product, ProductServiceModel.class);
 
     }
@@ -104,12 +113,11 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     @Transactional
-    public List<ProductServiceModel> getAllByUserUsername(String username) throws NotFoundException {
+    public List<ProductServiceModel> getAllByUserUsername(String username) {
         UserServiceModel userServiceModel = this.userService.getByUsername(username);
         List<ProductServiceModel> products = userServiceModel.getProducts();
         return products;
     }
-
 
 
 }

@@ -2,6 +2,7 @@ package com.kalin.shopdrop.service.services.impl;
 
 import com.kalin.shopdrop.data.models.News;
 import com.kalin.shopdrop.data.repositories.NewsRepository;
+import com.kalin.shopdrop.errors.NewsNotFoundException;
 import com.kalin.shopdrop.service.models.NewsServiceModel;
 import com.kalin.shopdrop.service.services.NewsService;
 import javassist.NotFoundException;
@@ -33,8 +34,8 @@ public class NewsServiceImpl implements NewsService {
     }
 
     @Override
-    public void deleteNews(String id) throws NotFoundException {
-        News news = this.newsRepository.findById(id).orElseThrow(() -> new NotFoundException("No such news"));
+    public void deleteNews(String id){
+        News news = this.newsRepository.findById(id).orElseThrow(() -> new NewsNotFoundException("No such news"));
         this.newsRepository.delete(news);
     }
 
@@ -45,14 +46,14 @@ public class NewsServiceImpl implements NewsService {
     }
 
     @Override
-    public NewsServiceModel getById(String id) throws NotFoundException {
-        News news = this.newsRepository.findById(id).orElseThrow(() -> new NotFoundException("No such news"));
+    public NewsServiceModel getById(String id) {
+        News news = this.newsRepository.findById(id).orElseThrow(() -> new NewsNotFoundException("No such news"));
         return this.modelMapper.map(news, NewsServiceModel.class);
     }
 
     @Override
-    public NewsServiceModel editNews(String id, NewsServiceModel newsServiceModel) throws NotFoundException {
-        News news = this.newsRepository.findById(id).orElseThrow(() -> new NotFoundException("No such news"));
+    public NewsServiceModel editNews(String id, NewsServiceModel newsServiceModel) {
+        News news = this.newsRepository.findById(id).orElseThrow(() -> new NewsNotFoundException("No such news"));
         news.setTitle(newsServiceModel.getTitle());
         news.setText(newsServiceModel.getText());
         this.newsRepository.save(news);

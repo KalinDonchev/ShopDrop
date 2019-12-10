@@ -15,5 +15,5 @@ public interface CategoryService {
 
     CategoryServiceModel getByName(String name);
 
-    void deleteCategory(String id) throws NotFoundException;
+    void deleteCategory(String id);
 }

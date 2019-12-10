@@ -24,7 +24,7 @@ public class EmailServiceImpl implements EmailService {
 
 
     @Override
-    public void sendEmail(String toUser, String fromUser, String text, String productName) throws NotFoundException {
+    public void sendEmail(String toUser, String fromUser, String text, String productName) {
         UserServiceModel user = this.userService.getByUsername(fromUser);
         SimpleMailMessage message = new SimpleMailMessage();
 

@@ -9,12 +9,12 @@ public interface NewsService {
 
     NewsServiceModel addNews(NewsServiceModel newsServiceModel);
 
-    void deleteNews(String id) throws NotFoundException;
+    void deleteNews(String id);
 
     List<NewsServiceModel> getAll();
 
     NewsServiceModel getById(String id) throws NotFoundException;
 
-    NewsServiceModel editNews(String id, NewsServiceModel newsServiceModel) throws NotFoundException;
+    NewsServiceModel editNews(String id, NewsServiceModel newsServiceModel);
 
 }

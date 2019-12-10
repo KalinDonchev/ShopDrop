@@ -4,6 +4,7 @@ import com.kalin.shopdrop.data.models.Product;
 import com.kalin.shopdrop.data.models.Review;
 import com.kalin.shopdrop.data.models.User;
 import com.kalin.shopdrop.data.repositories.UserRepository;
+import com.kalin.shopdrop.errors.UserNotFoundException;
 import com.kalin.shopdrop.service.models.ProductServiceModel;
 import com.kalin.shopdrop.service.models.ReviewServiceModel;
 import com.kalin.shopdrop.service.models.UserServiceModel;
@@ -37,9 +38,9 @@ public class UserServiceImpl implements UserService {
 
     @Override
     @Transactional
-    public void addProductToUser(String username, ProductServiceModel productServiceModel) throws NotFoundException {
+    public void addProductToUser(String username, ProductServiceModel productServiceModel) {
         // CREATE CUSTOM EXCEPTIONS
-        User user = this.userRepository.findByUsername(productServiceModel.getUser()).orElseThrow(() -> new NotFoundException("user not found"));
+        User user = this.userRepository.findByUsername(productServiceModel.getUser()).orElseThrow(() -> new UserNotFoundException("User not found"));
         this.productService.addProduct(productServiceModel);
         Product product = this.modelMapper.map(productServiceModel, Product.class);
         product.setUser(user);
@@ -49,8 +50,8 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void addReviewToUser(String username, ReviewServiceModel reviewServiceModel) throws NotFoundException {
-        User user = this.userRepository.findByUsername(reviewServiceModel.getUser()).orElseThrow(() -> new NotFoundException("No such user"));
+    public void addReviewToUser(String username, ReviewServiceModel reviewServiceModel) {
+        User user = this.userRepository.findByUsername(reviewServiceModel.getUser()).orElseThrow(() -> new UserNotFoundException("No such user"));
         this.reviewService.addReview(reviewServiceModel);
         Review review = this.modelMapper.map(reviewServiceModel, Review.class);
         review.setUser(user);
@@ -61,14 +62,14 @@ public class UserServiceImpl implements UserService {
 
     @Override
     @Transactional
-    public UserServiceModel getByUsername(String username) throws NotFoundException {
-        User user = this.userRepository.findByUsername(username).orElseThrow(() -> new NotFoundException("No such user"));
+    public UserServiceModel getByUsername(String username) {
+        User user = this.userRepository.findByUsername(username).orElseThrow(() -> new UserNotFoundException("No such user"));
         return this.modelMapper.map(user, UserServiceModel.class);
     }
 
     @Override
-    public UserServiceModel getById(String id) throws NotFoundException {
-        User user = this.userRepository.findById(id).orElseThrow(() -> new NotFoundException("user not found"));
+    public UserServiceModel getById(String id) {
+        User user = this.userRepository.findById(id).orElseThrow(() -> new UserNotFoundException("User not found"));
         return this.modelMapper.map(user, UserServiceModel.class);
     }
 }

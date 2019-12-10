@@ -3,6 +3,7 @@ package com.kalin.shopdrop.service.services.impl;
 import com.kalin.shopdrop.data.models.Review;
 import com.kalin.shopdrop.data.models.User;
 import com.kalin.shopdrop.data.repositories.ReviewRepository;
+import com.kalin.shopdrop.errors.ReviewNotFoundException;
 import com.kalin.shopdrop.service.models.ReviewServiceModel;
 import com.kalin.shopdrop.service.models.UserServiceModel;
 import com.kalin.shopdrop.service.services.ReviewService;
@@ -31,7 +32,7 @@ public class ReviewServiceImpl implements ReviewService {
     }
 
     @Override
-    public ReviewServiceModel addReview(ReviewServiceModel reviewServiceModel) throws NotFoundException {
+    public ReviewServiceModel addReview(ReviewServiceModel reviewServiceModel) {
         Review review = this.modelMapper.map(reviewServiceModel, Review.class);
         UserServiceModel userServiceModel = this.userService.getByUsername(reviewServiceModel.getUser());
         review.setUser(this.modelMapper.map(userServiceModel, User.class));
@@ -46,14 +47,14 @@ public class ReviewServiceImpl implements ReviewService {
     }
 
     @Override
-    public ReviewServiceModel getById(String id) throws NotFoundException {
-        Review review = this.reviewRepository.findById(id).orElseThrow(() -> new NotFoundException("Review not found"));
+    public ReviewServiceModel getById(String id) {
+        Review review = this.reviewRepository.findById(id).orElseThrow(() -> new ReviewNotFoundException("No such review"));
         return this.modelMapper.map(review, ReviewServiceModel.class);
     }
 
     @Override
-    public void deleteReview(String id) throws NotFoundException {
-        Review review = this.reviewRepository.findById(id).orElseThrow(() -> new NotFoundException("No such review"));
+    public void deleteReview(String id) {
+        Review review = this.reviewRepository.findById(id).orElseThrow(() -> new ReviewNotFoundException("No such review"));
         this.reviewRepository.delete(review);
     }
 
