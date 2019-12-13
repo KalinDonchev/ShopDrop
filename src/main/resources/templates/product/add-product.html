@@ -11,24 +11,30 @@
     </header>
     <main>
         <div class="signup-form">
-            <form th:action="@{/product/add}" th:method="post" enctype="multipart/form-data">
+            <form th:action="@{/product/add}" th:method="post" enctype="multipart/form-data" th:object="${model}">
                 <h2>Add Product</h2>
                 <div class="form-group">
-                    <input type="text" class="form-control" name="name" placeholder="Name" required="required">
+                    <input type="text" class="form-control" name="name" placeholder="Name" required="required" th:value="*{name}">
+                    <th:block th:if="${#fields.hasErrors('name')}">
+                        <small class="error" style="color: red" th:errors="*{name}"></small>
+                    </th:block>
                 </div>
                 <div class="form-group">
                     <textarea type="text" class="form-control" name="description" placeholder="Description" rows="5" required="required"></textarea>
                 </div>
                 <div class="form-group">
                     <input type="number" class="form-control" name="price" placeholder="Price"
-                           required="required">
+                           required="required" th:value="*{price}">
+                    <th:block th:if="${#fields.hasErrors('price')}">
+                        <small class="error" style="color: red" th:errors="*{price}"></small>
+                    </th:block>
                 </div>
 <!--                <div class="form-group">-->
 <!--                <input type="button" class="addSo" value="Add select option" />-->
 <!--                </div>-->
                 <div class="form-group">
                     <label for="category-menu" class="font-weight-bold"></label>
-                    <select multiple="" class="form-control" name="category" id="category-menu">
+                    <select multiple="" class="form-control" name="category" id="category-menu" required="required">
                         <option selected="" disabled="">--- Please Select Category ---</option>
                     </select>
 <!--                    <th:block>-->
@@ -42,7 +48,7 @@
 <!--                    </th:block>-->
                 </div>
                 <div class="form-group">
-                    <input type="file" class="form-control-file" name="image">
+                    <input type="file" class="form-control-file" name="image" required="required">
                 </div>
 
                 <div class="form-group">

@@ -5,14 +5,15 @@ import com.kalin.shopdrop.service.models.ProductServiceModel;
 import com.kalin.shopdrop.service.models.UserLoginServiceModel;
 import com.kalin.shopdrop.service.models.UserServiceModel;
 import com.kalin.shopdrop.service.services.*;
+import com.kalin.shopdrop.validation.product.ProductAddValidator;
 import com.kalin.shopdrop.web.models.AddProductModel;
 import com.kalin.shopdrop.web.models.SendEmailModel;
 import com.kalin.shopdrop.web.models.view.ProductAllViewModel;
 import com.kalin.shopdrop.web.models.view.ProductViewModel;
-import javassist.NotFoundException;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
@@ -31,28 +32,38 @@ public class ProductController extends BaseController {
     private final UserService userService;
     private final EmailService emailService;
     private final CloudinaryService cloudinaryService;
+    private final ProductAddValidator productAddValidator;
     private final ModelMapper modelMapper;
 
     @Autowired
-    public ProductController(ProductService productService, CategoryService categoryService, UserService userService, EmailService emailService, CloudinaryService cloudinaryService, ModelMapper modelMapper) {
+    public ProductController(ProductService productService, CategoryService categoryService, UserService userService, EmailService emailService, CloudinaryService cloudinaryService, ProductAddValidator productAddValidator, ModelMapper modelMapper) {
         this.productService = productService;
         this.categoryService = categoryService;
         this.userService = userService;
         this.emailService = emailService;
         this.cloudinaryService = cloudinaryService;
+        this.productAddValidator = productAddValidator;
         this.modelMapper = modelMapper;
     }
 
     @GetMapping("/add")
-    public ModelAndView addProduct(ModelAndView modelAndView) {
+    public ModelAndView addProduct(ModelAndView modelAndView, @ModelAttribute(name = "model") AddProductModel model) {
         List<CategoryServiceModel> categoryServiceModels = this.categoryService.getAll();
         // CHECK IF NEEDED TO PASS CategoryViewModel to view
+        modelAndView.addObject("model", model);
         modelAndView.addObject("categories", categoryServiceModels);
         return super.view("/product/add-product");
     }
 
     @PostMapping("/add")
-    public ModelAndView addProductConfirm(@ModelAttribute AddProductModel addProductModel, HttpSession session) throws IOException, NotFoundException {
+    public ModelAndView addProductConfirm(ModelAndView modelAndView, @ModelAttribute(name = "model") AddProductModel addProductModel, HttpSession session, BindingResult bindingResult) throws IOException {
+        this.productAddValidator.validate(addProductModel, bindingResult);
+
+        if (bindingResult.hasErrors()) {
+            modelAndView.addObject("model", addProductModel);
+            return super.view("product/add-product", modelAndView);
+        }
+
         ProductServiceModel productServiceModel = this.modelMapper.map(addProductModel, ProductServiceModel.class);
         //set user
         String username = ((UserLoginServiceModel) session.getAttribute("user")).getUsername();
@@ -66,7 +77,7 @@ public class ProductController extends BaseController {
     }
 
     @GetMapping("/details/{id}")
-    public ModelAndView detailsProduct(@PathVariable String id, ModelAndView modelAndView) throws NotFoundException {
+    public ModelAndView detailsProduct(@PathVariable String id, ModelAndView modelAndView) {
         ProductViewModel model = this.modelMapper.map(this.productService.getById(id), ProductViewModel.class);
 
         modelAndView.addObject("product", model);
@@ -75,7 +86,7 @@ public class ProductController extends BaseController {
     }
 
     @PostMapping("/details/{id}")
-    public ModelAndView detailsProductConfirm(@PathVariable String id, @ModelAttribute SendEmailModel sendEmailModel, HttpSession session) throws NotFoundException {
+    public ModelAndView detailsProductConfirm(@PathVariable String id, @ModelAttribute SendEmailModel sendEmailModel, HttpSession session) {
         String fromUser = ((UserLoginServiceModel) session.getAttribute("user")).getUsername();
         ProductServiceModel productServiceModel = this.productService.getById(id);
         UserServiceModel user = this.userService.getByUsername(productServiceModel.getUser());
@@ -86,7 +97,7 @@ public class ProductController extends BaseController {
 
 
     @GetMapping("/all/{username}")
-    public ModelAndView allProducts(@PathVariable String username, ModelAndView modelAndView) throws NotFoundException {
+    public ModelAndView allProducts(@PathVariable String username, ModelAndView modelAndView) {
         List<ProductServiceModel> productServiceAll = this.productService.getAllByUserUsername(username);
 
         List<ProductAllViewModel> products = productServiceAll.stream().map(p -> this.modelMapper.map(p, ProductAllViewModel.class)).collect(Collectors.toList());
@@ -96,7 +107,7 @@ public class ProductController extends BaseController {
     }
 
     @GetMapping("/edit/{id}")
-    public ModelAndView editProduct(@PathVariable String id, ModelAndView modelAndView) throws NotFoundException {
+    public ModelAndView editProduct(@PathVariable String id, ModelAndView modelAndView) {
         ProductServiceModel productServiceModel = this.productService.getById(id);
         AddProductModel product = this.modelMapper.map(productServiceModel, AddProductModel.class);
         product.setCategory(productServiceModel.getCategory().getName());
@@ -108,7 +119,7 @@ public class ProductController extends BaseController {
     }
 
     @PostMapping("/edit/{id}")
-    public ModelAndView editProductConfirm(@PathVariable String id, @ModelAttribute AddProductModel addProductModel) throws NotFoundException {
+    public ModelAndView editProductConfirm(@PathVariable String id, @ModelAttribute AddProductModel addProductModel) {
         ProductServiceModel productServiceModel = this.modelMapper.map(addProductModel, ProductServiceModel.class);
         productServiceModel.setCategory(this.categoryService.getById(addProductModel.getCategory()));
         this.productService.editProduct(id, productServiceModel);
@@ -117,7 +128,7 @@ public class ProductController extends BaseController {
     }
 
     @GetMapping("/delete/{id}")
-    public ModelAndView deleteProduct(@PathVariable String id, ModelAndView modelAndView) throws NotFoundException {
+    public ModelAndView deleteProduct(@PathVariable String id, ModelAndView modelAndView) {
         ProductServiceModel productServiceModel = this.productService.getById(id);
         AddProductModel product = this.modelMapper.map(productServiceModel, AddProductModel.class);
         product.setCategory(productServiceModel.getCategory().getName());
@@ -129,7 +140,7 @@ public class ProductController extends BaseController {
     }
 
     @PostMapping("/delete/{id}")
-    public ModelAndView deleteProductConfirm(@PathVariable String id) throws NotFoundException {
+    public ModelAndView deleteProductConfirm(@PathVariable String id) {
         this.productService.deleteProduct(id);
         return super.redirect("/home");
     }

@@ -56,7 +56,7 @@ public class CategoryServiceImpl implements CategoryService {
 
     @Override
     public CategoryServiceModel getByName(String name) {
-        Category category = this.categoryRepository.findByName(name);
+        Category category = this.categoryRepository.findByName(name).orElseThrow(() -> new CategoryNotFoundException("No such category"));
         return this.modelMapper.map(category, CategoryServiceModel.class);
     }
 

@@ -1,5 +1,6 @@
 package com.kalin.shopdrop.web.models;
 
+
 public class RegisterUserModel {
 
     private String username;

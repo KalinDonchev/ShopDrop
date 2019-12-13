@@ -1,6 +1,7 @@
 package com.kalin.shopdrop.service.models;
 
 import java.util.List;
+import java.util.Set;
 
 public class UserServiceModel {
 
@@ -11,6 +12,8 @@ public class UserServiceModel {
     private String confirmPassword;
     //MAY NEED LIST<PRODUCTS>
     private List<ProductServiceModel> products;
+
+    private Set<RoleServiceModel> authorities;
 
     public UserServiceModel() {
     }
@@ -61,5 +64,13 @@ public class UserServiceModel {
 
     public void setProducts(List<ProductServiceModel> products) {
         this.products = products;
+    }
+
+    public Set<RoleServiceModel> getAuthorities() {
+        return authorities;
+    }
+
+    public void setAuthorities(Set<RoleServiceModel> authorities) {
+        this.authorities = authorities;
     }
 }

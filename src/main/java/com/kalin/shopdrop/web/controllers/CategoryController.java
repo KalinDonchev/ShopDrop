@@ -2,12 +2,14 @@ package com.kalin.shopdrop.web.controllers;
 
 import com.kalin.shopdrop.service.models.CategoryServiceModel;
 import com.kalin.shopdrop.service.services.CategoryService;
+import com.kalin.shopdrop.validation.category.CategoryAddValidator;
 import com.kalin.shopdrop.web.models.AddCategoryModel;
 import com.kalin.shopdrop.web.models.view.CategoryAllViewModel;
 import javassist.NotFoundException;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
@@ -20,20 +22,30 @@ public class CategoryController extends BaseController {
 
     private final CategoryService categoryService;
     private final ModelMapper modelMapper;
+    private final CategoryAddValidator categoryAddValidator;
 
     @Autowired
-    public CategoryController(CategoryService categoryService, ModelMapper modelMapper) {
+    public CategoryController(CategoryService categoryService, ModelMapper modelMapper, CategoryAddValidator categoryAddValidator) {
         this.categoryService = categoryService;
         this.modelMapper = modelMapper;
+        this.categoryAddValidator = categoryAddValidator;
     }
 
     @GetMapping("/add")
-    public ModelAndView addCategory() {
+    public ModelAndView addCategory(ModelAndView modelAndView, @ModelAttribute(name = "model") AddCategoryModel model) {
+        modelAndView.addObject("model", model);
         return super.view("category/add-category");
     }
 
     @PostMapping("/add")
-    public ModelAndView addCategoryConfirm(@ModelAttribute AddCategoryModel addCategoryModel) {
+    public ModelAndView addCategoryConfirm(ModelAndView modelAndView, @ModelAttribute(name = "model") AddCategoryModel addCategoryModel, BindingResult bindingResult) {
+        this.categoryAddValidator.validate(addCategoryModel, bindingResult);
+
+        if (bindingResult.hasErrors()) {
+            modelAndView.addObject("model", addCategoryModel);
+            return super.view("category/add-category", modelAndView);
+        }
+
         CategoryServiceModel categoryServiceModel = this.modelMapper.map(addCategoryModel, CategoryServiceModel.class);
         this.categoryService.addCategory(categoryServiceModel);
         return super.redirect("/home");
