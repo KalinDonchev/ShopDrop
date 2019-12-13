@@ -2,11 +2,12 @@ package com.kalin.shopdrop.web.controllers;
 
 import com.kalin.shopdrop.service.models.CategoryServiceModel;
 import com.kalin.shopdrop.service.models.ProductServiceModel;
-import com.kalin.shopdrop.service.models.UserLoginServiceModel;
 import com.kalin.shopdrop.service.models.UserServiceModel;
 import com.kalin.shopdrop.service.services.*;
 import com.kalin.shopdrop.validation.product.ProductAddValidator;
+import com.kalin.shopdrop.validation.product.ProductEditValidator;
 import com.kalin.shopdrop.web.models.AddProductModel;
+import com.kalin.shopdrop.web.models.EditProductModel;
 import com.kalin.shopdrop.web.models.SendEmailModel;
 import com.kalin.shopdrop.web.models.view.ProductAllViewModel;
 import com.kalin.shopdrop.web.models.view.ProductViewModel;
@@ -17,8 +18,8 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
-import javax.servlet.http.HttpSession;
 import java.io.IOException;
+import java.security.Principal;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -33,16 +34,18 @@ public class ProductController extends BaseController {
     private final EmailService emailService;
     private final CloudinaryService cloudinaryService;
     private final ProductAddValidator productAddValidator;
+    private final ProductEditValidator productEditValidator;
     private final ModelMapper modelMapper;
 
     @Autowired
-    public ProductController(ProductService productService, CategoryService categoryService, UserService userService, EmailService emailService, CloudinaryService cloudinaryService, ProductAddValidator productAddValidator, ModelMapper modelMapper) {
+    public ProductController(ProductService productService, CategoryService categoryService, UserService userService, EmailService emailService, CloudinaryService cloudinaryService, ProductAddValidator productAddValidator, ProductEditValidator productEditValidator, ModelMapper modelMapper) {
         this.productService = productService;
         this.categoryService = categoryService;
         this.userService = userService;
         this.emailService = emailService;
         this.cloudinaryService = cloudinaryService;
         this.productAddValidator = productAddValidator;
+        this.productEditValidator = productEditValidator;
         this.modelMapper = modelMapper;
     }
 
@@ -56,7 +59,7 @@ public class ProductController extends BaseController {
     }
 
     @PostMapping("/add")
-    public ModelAndView addProductConfirm(ModelAndView modelAndView, @ModelAttribute(name = "model") AddProductModel addProductModel, HttpSession session, BindingResult bindingResult) throws IOException {
+    public ModelAndView addProductConfirm(ModelAndView modelAndView, @ModelAttribute(name = "model") AddProductModel addProductModel, Principal principal, BindingResult bindingResult) throws IOException {
         this.productAddValidator.validate(addProductModel, bindingResult);
 
         if (bindingResult.hasErrors()) {
@@ -66,7 +69,8 @@ public class ProductController extends BaseController {
 
         ProductServiceModel productServiceModel = this.modelMapper.map(addProductModel, ProductServiceModel.class);
         //set user
-        String username = ((UserLoginServiceModel) session.getAttribute("user")).getUsername();
+        // String username = ((UserLoginServiceModel) session.getAttribute("user")).getUsername();
+        String username = principal.getName();
         productServiceModel.setUser(username);
         //add category
         productServiceModel.setCategory(this.categoryService.getById(addProductModel.getCategory()));
@@ -86,8 +90,9 @@ public class ProductController extends BaseController {
     }
 
     @PostMapping("/details/{id}")
-    public ModelAndView detailsProductConfirm(@PathVariable String id, @ModelAttribute SendEmailModel sendEmailModel, HttpSession session) {
-        String fromUser = ((UserLoginServiceModel) session.getAttribute("user")).getUsername();
+    public ModelAndView detailsProductConfirm(@PathVariable String id, @ModelAttribute SendEmailModel sendEmailModel, Principal principal) {
+        //String fromUser = ((UserLoginServiceModel) session.getAttribute("user")).getUsername();
+        String fromUser = principal.getName();
         ProductServiceModel productServiceModel = this.productService.getById(id);
         UserServiceModel user = this.userService.getByUsername(productServiceModel.getUser());
         this.emailService.sendEmail(user.getEmail(), fromUser, sendEmailModel.getMessage(), productServiceModel.getName());
@@ -107,21 +112,30 @@ public class ProductController extends BaseController {
     }
 
     @GetMapping("/edit/{id}")
-    public ModelAndView editProduct(@PathVariable String id, ModelAndView modelAndView) {
+    public ModelAndView editProduct(@PathVariable String id, ModelAndView modelAndView, @ModelAttribute(name = "model") EditProductModel model) {
         ProductServiceModel productServiceModel = this.productService.getById(id);
-        AddProductModel product = this.modelMapper.map(productServiceModel, AddProductModel.class);
-        product.setCategory(productServiceModel.getCategory().getName());
+        model = this.modelMapper.map(productServiceModel, EditProductModel.class);
+        model.setCategory(productServiceModel.getCategory().getName());
 
-        modelAndView.addObject("product", product);
+        modelAndView.addObject("model", model);
         modelAndView.addObject("productId", id);
 
         return super.view("product/edit-product", modelAndView);
     }
 
     @PostMapping("/edit/{id}")
-    public ModelAndView editProductConfirm(@PathVariable String id, @ModelAttribute AddProductModel addProductModel) {
-        ProductServiceModel productServiceModel = this.modelMapper.map(addProductModel, ProductServiceModel.class);
-        productServiceModel.setCategory(this.categoryService.getById(addProductModel.getCategory()));
+    public ModelAndView editProductConfirm(@PathVariable String id, ModelAndView modelAndView, @ModelAttribute(name = "model") EditProductModel model, BindingResult bindingResult) {
+        this.productEditValidator.validate(model, bindingResult);
+
+        if (bindingResult.hasErrors()) {
+            modelAndView.addObject("productId", id);
+            modelAndView.addObject("model", model);
+
+            return super.view("category/edit-category", modelAndView);
+        }
+
+        ProductServiceModel productServiceModel = this.modelMapper.map(model, ProductServiceModel.class);
+        productServiceModel.setCategory(this.categoryService.getById(model.getCategory()));
         this.productService.editProduct(id, productServiceModel);
         return super.redirect("/home");
 

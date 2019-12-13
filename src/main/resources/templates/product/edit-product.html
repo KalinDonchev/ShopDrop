@@ -11,17 +11,23 @@
     </header>
     <main>
         <div class="signup-form">
-            <form th:action="@{/product/edit/{id}(id=${productId})}" th:method="post" enctype="multipart/form-data">
+            <form th:action="@{/product/edit/{id}(id=${productId})}" th:method="post" enctype="multipart/form-data" th:object="${model}">
                 <h2>Edit Product</h2>
                 <div class="form-group">
-                    <input type="text" class="form-control" name="name" placeholder="Name" required="required" th:value="${product.name}">
+                    <input type="text" class="form-control" name="name" placeholder="Name" required="required" th:value="${model.name}">
+                    <th:block th:if="${#fields.hasErrors('name')}">
+                        <small class="error" style="color: red" th:errors="*{name}"></small>
+                    </th:block>
                 </div>
                 <div class="form-group">
-                    <textarea type="text" class="form-control" name="description" placeholder="Description" rows="5" required="required" th:text="${product.description}"></textarea>
+                    <textarea type="text" class="form-control" name="description" placeholder="Description" rows="5" required="required" th:text="${model.description}"></textarea>
                 </div>
                 <div class="form-group">
                     <input type="number" class="form-control" name="price" placeholder="Price"
-                           required="required" th:value="${product.price}">
+                           required="required" th:value="${model.price}">
+                    <th:block th:if="${#fields.hasErrors('price')}">
+                        <small class="error" style="color: red" th:errors="*{price}"></small>
+                    </th:block>
                 </div>
                 <!--                <div class="form-group">-->
                 <!--                <input type="button" class="addSo" value="Add select option" />-->
@@ -29,7 +35,7 @@
                 <h2>Current Category</h2>
                 <div class="form-group">
                     <input type="text" class="form-control" name="category" placeholder="Price"
-                           required="required" th:value="${product.category}" disabled>
+                           required="required" th:value="${model.category}" disabled>
                 </div>
                 <div class="form-group">
                     <label for="category-menu" class="font-weight-bold"></label>

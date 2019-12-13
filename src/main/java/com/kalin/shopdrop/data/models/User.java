@@ -38,7 +38,7 @@ public class User extends BaseEntity implements UserDetails {
     private Set<Role> authorities;
 
     public User() {
-        authorities = new HashSet<>();
+
     }
 
     public String getUsername() {

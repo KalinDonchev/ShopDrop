@@ -34,6 +34,7 @@ public class ValidationConstants {
 
     public final static String CATEGORY_LENGTH = "Category name must be between 2 and 20 characters long!";
 
+    public final static String WRONG_PASSWORD = "Wrong password!";
 
 
 

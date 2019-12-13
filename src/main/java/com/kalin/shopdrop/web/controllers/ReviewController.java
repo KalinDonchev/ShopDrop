@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpSession;
+import java.security.Principal;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -36,9 +37,10 @@ public class ReviewController extends BaseController {
     }
 
     @PostMapping("/add")
-    public ModelAndView addReviewConfirm(@ModelAttribute AddReviewModel addReviewModel, HttpSession session) throws NotFoundException {
+    public ModelAndView addReviewConfirm(@ModelAttribute AddReviewModel addReviewModel, Principal principal) {
         ReviewServiceModel reviewServiceModel = this.modelMapper.map(addReviewModel, ReviewServiceModel.class);
-        String username = ((UserLoginServiceModel) session.getAttribute("user")).getUsername();
+        //String username = ((UserLoginServiceModel) session.getAttribute("user")).getUsername();
+        String username = principal.getName();
         reviewServiceModel.setUser(username);
         this.reviewService.addReview(reviewServiceModel);
         return super.redirect("/review/all");
@@ -62,7 +64,7 @@ public class ReviewController extends BaseController {
 
 
     @GetMapping("/delete/{id}")
-    public ModelAndView deleteReview(@PathVariable String id, ModelAndView modelAndView) throws NotFoundException {
+    public ModelAndView deleteReview(@PathVariable String id, ModelAndView modelAndView)  {
         ReviewServiceModel reviewServiceModel = this.reviewService.getById(id);
         AddReviewModel review = this.modelMapper.map(reviewServiceModel, AddReviewModel.class);
 
@@ -73,7 +75,7 @@ public class ReviewController extends BaseController {
     }
 
     @PostMapping("/delete/{id}")
-    public ModelAndView deleteReviewConfirm(@PathVariable String id) throws NotFoundException {
+    public ModelAndView deleteReviewConfirm(@PathVariable String id) {
         this.reviewService.deleteReview(id);
         return super.redirect("/home");
     }

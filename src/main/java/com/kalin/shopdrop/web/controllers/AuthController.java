@@ -8,6 +8,7 @@ import com.kalin.shopdrop.web.models.LoginUserModel;
 import com.kalin.shopdrop.web.models.RegisterUserModel;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -35,12 +36,14 @@ public class AuthController extends BaseController {
     }
 
     @GetMapping("/register")
+    @PreAuthorize("isAnonymous()")
     public ModelAndView register(ModelAndView modelAndView, @ModelAttribute(name = "model") RegisterUserModel model) {
         modelAndView.addObject("model", model);
         return super.view("auth/register", modelAndView);
     }
 
     @PostMapping("/register")
+    @PreAuthorize("isAnonymous()")
     public ModelAndView registerConfirm(ModelAndView modelAndView, @ModelAttribute(name = "model") RegisterUserModel registerUserModel, BindingResult bindingResult) {
         this.userRegisterValidator.validate(registerUserModel, bindingResult);
 
@@ -55,22 +58,23 @@ public class AuthController extends BaseController {
     }
 
     @GetMapping("/login")
+    @PreAuthorize("isAnonymous()")
     public ModelAndView login() {
         return super.view("auth/login");
     }
 
-    @PostMapping("/login")
-    public ModelAndView loginConfirm(@ModelAttribute LoginUserModel loginUserModel, HttpSession session) {
-        UserLoginServiceModel userLoginServiceModel = this.modelMapper.map(loginUserModel, UserLoginServiceModel.class);
-        try {
-            UserLoginServiceModel login = this.authService.login(userLoginServiceModel);
-            session.setAttribute("user", login);
-            return super.redirect("/home");
-        } catch (Exception e) {
-            return super.redirect("/auth/login");
-        }
-
-    }
+//    @PostMapping("/login")
+//    public ModelAndView loginConfirm(@ModelAttribute LoginUserModel loginUserModel, HttpSession session) {
+//        UserLoginServiceModel userLoginServiceModel = this.modelMapper.map(loginUserModel, UserLoginServiceModel.class);
+//        try {
+//            UserLoginServiceModel login = this.authService.login(userLoginServiceModel);
+//            session.setAttribute("user", login);
+//            return super.redirect("/home");
+//        } catch (Exception e) {
+//            return super.redirect("/auth/login");
+//        }
+//
+//    }
 
 
 }

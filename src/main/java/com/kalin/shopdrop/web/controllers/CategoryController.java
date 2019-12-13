@@ -73,7 +73,7 @@ public class CategoryController extends BaseController {
     }
 
     @PostMapping("/delete/{id}")
-    public ModelAndView deleteProductConfirm(@PathVariable String id) throws NotFoundException {
+    public ModelAndView deleteProductConfirm(@PathVariable String id) {
         this.categoryService.deleteCategory(id);
         return super.redirect("/home");
     }

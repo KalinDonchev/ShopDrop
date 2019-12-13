@@ -4,6 +4,7 @@ import com.kalin.shopdrop.data.models.Product;
 import com.kalin.shopdrop.data.models.Review;
 import com.kalin.shopdrop.data.models.User;
 import com.kalin.shopdrop.data.repositories.UserRepository;
+import com.kalin.shopdrop.errors.IncorrectPasswordException;
 import com.kalin.shopdrop.errors.UserNotFoundException;
 import com.kalin.shopdrop.service.models.ProductServiceModel;
 import com.kalin.shopdrop.service.models.ReviewServiceModel;
@@ -16,26 +17,31 @@ import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
+@Transactional
 public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
     private final ProductService productService;
     private final ReviewService reviewService;
     private final RoleService roleService;
+    private final PasswordEncoder passwordEncoder;
     private final ModelMapper modelMapper;
 
     @Autowired
-    public UserServiceImpl(UserRepository userRepository, ProductService productService, ReviewService reviewService, RoleService roleService, ModelMapper modelMapper) {
+    public UserServiceImpl(UserRepository userRepository, ProductService productService, ReviewService reviewService, RoleService roleService, PasswordEncoder passwordEncoder, ModelMapper modelMapper) {
         this.userRepository = userRepository;
         this.productService = productService;
         this.reviewService = reviewService;
         this.roleService = roleService;
+        this.passwordEncoder = passwordEncoder;
         this.modelMapper = modelMapper;
     }
 
@@ -78,7 +84,42 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void makeAdmin(String id) {
+    public List<UserServiceModel> getAllUsers() {
+        return this.userRepository.findAll()
+                .stream()
+                .map(u -> this.modelMapper.map(u, UserServiceModel.class))
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public UserServiceModel editProfile(UserServiceModel userServiceModel, String oldPassword) {
+        User user = this.userRepository.findByUsername(userServiceModel.getUsername())
+                .orElseThrow(() -> new UsernameNotFoundException("User not found!"));
+
+        if (!this.passwordEncoder.matches(oldPassword, user.getPassword())) {
+            throw new IncorrectPasswordException("Incorrect password!");
+        }
+
+        if (userServiceModel.getPassword() != null) {
+            user.setPassword(this.passwordEncoder.encode(userServiceModel.getPassword()));
+        } else {
+            user.setPassword(user.getPassword());
+        }
+
+        user.setEmail(userServiceModel.getEmail());
+
+//        user.setPassword(userServiceModel.getPassword() != null ?
+//                this.passwordEncoder.encode(userServiceModel.getPassword()) :
+//                user.getPassword());
+//        user.setEmail(userServiceModel.getEmail());
+
+        this.userRepository.save(user);
+
+        return this.modelMapper.map(user, UserServiceModel.class);
+    }
+
+    @Override
+    public void setAdmin(String id) {
         User user = this.userRepository.findById(id)
                 .orElseThrow(() -> new UserNotFoundException("No such user"));
 
@@ -88,11 +129,13 @@ public class UserServiceImpl implements UserService {
         userServiceModel.getAuthorities().add(this.roleService.findByAuthority("ROLE_USER"));
         userServiceModel.getAuthorities().add(this.roleService.findByAuthority("ROLE_ADMIN"));
 
-        this.userRepository.saveAndFlush(this.modelMapper.map(userServiceModel, User.class));
+        User newUser = this.modelMapper.map(userServiceModel, User.class);
+        this.userRepository.save(newUser);
+
     }
 
     @Override
-    public void makeUser(String id) {
+    public void setUser(String id) {
         User user = this.userRepository.findById(id)
                 .orElseThrow(() -> new UserNotFoundException("No such user"));
 
@@ -101,7 +144,9 @@ public class UserServiceImpl implements UserService {
 
         userServiceModel.getAuthorities().add(this.roleService.findByAuthority("ROLE_USER"));
 
-        this.userRepository.saveAndFlush(this.modelMapper.map(userServiceModel, User.class));
+        User newUser = this.modelMapper.map(userServiceModel, User.class);
+        this.userRepository.save(newUser);
+
     }
 
     @Override

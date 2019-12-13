@@ -63,18 +63,18 @@ public class AuthServiceImpl implements AuthService {
         return this.modelMapper.map(user, UserServiceModel.class);
     }
 
-    @Override
-    public UserLoginServiceModel login(UserLoginServiceModel userLoginServiceModel) throws Exception {
-        String passwordHash = this.hashingService.hash(userLoginServiceModel.getPassword());
-
-        User user = this.userRepository.findByUsernameAndPassword(userLoginServiceModel.getUsername(), passwordHash).orElseThrow(() -> new NotFoundException("No such user"));
-        UserLoginServiceModel mapped = this.modelMapper.map(user, UserLoginServiceModel.class);
-        mapped.setUsername(user.getUsername());
-        mapped.setPassword(user.getPassword());
-
-        return mapped;
-
-    }
+//    @Override
+//    public UserLoginServiceModel login(UserLoginServiceModel userLoginServiceModel) throws Exception {
+//        String passwordHash = this.hashingService.hash(userLoginServiceModel.getPassword());
+//
+//        User user = this.userRepository.findByUsernameAndPassword(userLoginServiceModel.getUsername(), passwordHash).orElseThrow(() -> new NotFoundException("No such user"));
+//        UserLoginServiceModel mapped = this.modelMapper.map(user, UserLoginServiceModel.class);
+//        mapped.setUsername(user.getUsername());
+//        mapped.setPassword(user.getPassword());
+//
+//        return mapped;
+//
+//    }
 
 
 }

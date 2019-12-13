@@ -6,6 +6,8 @@ import com.kalin.shopdrop.service.models.UserServiceModel;
 import javassist.NotFoundException;
 import org.springframework.security.core.userdetails.UserDetailsService;
 
+import java.util.List;
+
 public interface UserService extends UserDetailsService {
 
     void addProductToUser(String username, ProductServiceModel productServiceModel);
@@ -16,7 +18,11 @@ public interface UserService extends UserDetailsService {
 
     UserServiceModel getById(String id);
 
-    void makeAdmin(String id);
+    List<UserServiceModel> getAllUsers();
 
-    void makeUser(String id);
+    UserServiceModel editProfile(UserServiceModel userServiceModel, String oldPassword);
+
+    void setAdmin(String id);
+
+    void setUser(String id);
 }

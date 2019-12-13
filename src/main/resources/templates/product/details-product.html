@@ -42,14 +42,14 @@
                             </dl>  <!-- item-property-hor .// -->
                             <hr>
 <!--                            <a th:href="@{/mail/send}" class="btn btn-lg btn-primary text-uppercase"> Send Email </a>-->
-                            <th:block th:if="${session.user.username != product.user}">
+                            <th:block th:if="${session.username != product.user}">
                             <div class="signup-form">
                                 <form th:method="post">
                                     <h2>Email</h2>
                                     <p class="hint-text">From :</p>
                                     <div class="form-group">
                                         <input type="text" class="form-control" name="email" placeholder="Email"
-                                               required="required" disabled th:value="${session.user.username}">
+                                               required="required" disabled th:value="${session.username}">
                                     </div>
 
                                     <div class="form-group">

@@ -9,7 +9,5 @@ public interface AuthService {
 
     UserServiceModel register(UserServiceModel userServiceModel);
 
-    UserLoginServiceModel login(UserLoginServiceModel userLoginServiceModel) throws Exception;
-
 
 }
