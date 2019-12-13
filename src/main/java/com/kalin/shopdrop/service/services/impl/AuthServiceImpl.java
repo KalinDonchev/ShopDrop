@@ -1,7 +1,9 @@
 package com.kalin.shopdrop.service.services.impl;
 
+import com.kalin.shopdrop.data.models.Role;
 import com.kalin.shopdrop.data.models.User;
 import com.kalin.shopdrop.data.repositories.UserRepository;
+import com.kalin.shopdrop.service.models.RoleServiceModel;
 import com.kalin.shopdrop.service.models.UserLoginServiceModel;
 import com.kalin.shopdrop.service.models.UserServiceModel;
 import com.kalin.shopdrop.service.services.AuthService;
@@ -14,6 +16,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.LinkedHashSet;
+import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 @Service
 public class AuthServiceImpl implements AuthService {
@@ -35,9 +40,9 @@ public class AuthServiceImpl implements AuthService {
 
     @Override
     public UserServiceModel register(UserServiceModel userServiceModel) {
-            // validate
-            // do something
-           // throw new UserNotFoundException();
+        // validate
+        // do something
+        // throw new UserNotFoundException();
 
         this.roleService.seedRolesInDb();
         if (this.userRepository.count() == 0) {
@@ -48,9 +53,11 @@ public class AuthServiceImpl implements AuthService {
             userServiceModel.getAuthorities().add(this.roleService.findByAuthority("ROLE_USER"));
         }
 
-
         User user = this.modelMapper.map(userServiceModel, User.class);
+
+
         user.setPassword(this.hashingService.hash(user.getPassword()));
+
         this.userRepository.saveAndFlush(user);
 
         return this.modelMapper.map(user, UserServiceModel.class);
@@ -60,12 +67,12 @@ public class AuthServiceImpl implements AuthService {
     public UserLoginServiceModel login(UserLoginServiceModel userLoginServiceModel) throws Exception {
         String passwordHash = this.hashingService.hash(userLoginServiceModel.getPassword());
 
-            User user = this.userRepository.findByUsernameAndPassword(userLoginServiceModel.getUsername(), passwordHash).orElseThrow(() -> new NotFoundException("No such user"));
-            UserLoginServiceModel mapped = this.modelMapper.map(user, UserLoginServiceModel.class);
-            mapped.setUsername(user.getUsername());
-            mapped.setPassword(user.getPassword());
+        User user = this.userRepository.findByUsernameAndPassword(userLoginServiceModel.getUsername(), passwordHash).orElseThrow(() -> new NotFoundException("No such user"));
+        UserLoginServiceModel mapped = this.modelMapper.map(user, UserLoginServiceModel.class);
+        mapped.setUsername(user.getUsername());
+        mapped.setPassword(user.getPassword());
 
-            return mapped;
+        return mapped;
 
     }
 

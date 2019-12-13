@@ -10,7 +10,7 @@ public class ValidationConstants {
 
     public final static String USERNAME_LENGTH = "Username must be between 3 and 20 characters long!";
 
-    public final static String PASSWORD_LENGTH = "Username must be at least 6 characters long!";
+    public final static String PASSWORD_LENGTH = "Password must be at least 6 characters long!";
 
     public final static String PASSWORDS_DO_NOT_MATCH = "Passwords do not match!";
 

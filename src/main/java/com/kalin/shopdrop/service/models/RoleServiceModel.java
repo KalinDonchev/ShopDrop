@@ -2,9 +2,18 @@ package com.kalin.shopdrop.service.models;
 
 public class RoleServiceModel {
 
+    private String id;
     private String authority;
 
     public RoleServiceModel() {
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
     }
 
     public String getAuthority() {
