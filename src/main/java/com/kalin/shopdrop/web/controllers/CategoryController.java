@@ -1,5 +1,6 @@
 package com.kalin.shopdrop.web.controllers;
 
+import com.kalin.shopdrop.config.annotations.PageTitle;
 import com.kalin.shopdrop.service.models.CategoryServiceModel;
 import com.kalin.shopdrop.service.services.CategoryService;
 import com.kalin.shopdrop.validation.category.CategoryAddValidator;
@@ -8,6 +9,7 @@ import com.kalin.shopdrop.web.models.view.CategoryAllViewModel;
 import javassist.NotFoundException;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
@@ -32,12 +34,15 @@ public class CategoryController extends BaseController {
     }
 
     @GetMapping("/add")
+    @PreAuthorize("hasRole('ROLE_ROOT')")
+    @PageTitle("Add Category")
     public ModelAndView addCategory(ModelAndView modelAndView, @ModelAttribute(name = "model") AddCategoryModel model) {
         modelAndView.addObject("model", model);
         return super.view("category/add-category");
     }
 
     @PostMapping("/add")
+    @PreAuthorize("hasRole('ROLE_ROOT')")
     public ModelAndView addCategoryConfirm(ModelAndView modelAndView, @ModelAttribute(name = "model") AddCategoryModel addCategoryModel, BindingResult bindingResult) {
         this.categoryAddValidator.validate(addCategoryModel, bindingResult);
 
@@ -52,6 +57,8 @@ public class CategoryController extends BaseController {
     }
 
     @GetMapping("/all")
+    @PreAuthorize("hasRole('ROLE_ROOT')")
+    @PageTitle("Add Categories")
     public ModelAndView allCategories(ModelAndView modelAndView) {
         List<CategoryServiceModel> categoryServiceModels = this.categoryService.getAll();
         List<CategoryAllViewModel> categories = categoryServiceModels.stream().map(c -> this.modelMapper.map(c, CategoryAllViewModel.class)).collect(Collectors.toList());
@@ -60,6 +67,8 @@ public class CategoryController extends BaseController {
     }
 
     @GetMapping("/delete/{id}")
+    @PreAuthorize("hasRole('ROLE_ROOT')")
+    @PageTitle("Delete Category")
     public ModelAndView deleteCateogory(@PathVariable String id, ModelAndView modelAndView){
         CategoryServiceModel categoryServiceModel = this.categoryService.getById(id);
         AddCategoryModel category = this.modelMapper.map(categoryServiceModel, AddCategoryModel.class);
@@ -73,6 +82,7 @@ public class CategoryController extends BaseController {
     }
 
     @PostMapping("/delete/{id}")
+    @PreAuthorize("hasRole('ROLE_ROOT')")
     public ModelAndView deleteProductConfirm(@PathVariable String id) {
         this.categoryService.deleteCategory(id);
         return super.redirect("/home");

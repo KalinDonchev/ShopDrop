@@ -1,5 +1,6 @@
 package com.kalin.shopdrop.web.controllers;
 
+import com.kalin.shopdrop.config.annotations.PageTitle;
 import com.kalin.shopdrop.service.models.UserLoginServiceModel;
 import com.kalin.shopdrop.service.models.UserServiceModel;
 import com.kalin.shopdrop.service.services.AuthService;
@@ -37,6 +38,7 @@ public class AuthController extends BaseController {
 
     @GetMapping("/register")
     @PreAuthorize("isAnonymous()")
+    @PageTitle("Register")
     public ModelAndView register(ModelAndView modelAndView, @ModelAttribute(name = "model") RegisterUserModel model) {
         modelAndView.addObject("model", model);
         return super.view("auth/register", modelAndView);
@@ -59,6 +61,7 @@ public class AuthController extends BaseController {
 
     @GetMapping("/login")
     @PreAuthorize("isAnonymous()")
+    @PageTitle("Login")
     public ModelAndView login() {
         return super.view("auth/login");
     }

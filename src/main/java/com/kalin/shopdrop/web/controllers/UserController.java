@@ -1,5 +1,6 @@
 package com.kalin.shopdrop.web.controllers;
 
+import com.kalin.shopdrop.config.annotations.PageTitle;
 import com.kalin.shopdrop.service.models.UserServiceModel;
 import com.kalin.shopdrop.service.services.UserService;
 import com.kalin.shopdrop.validation.user.UserEditValidator;
@@ -33,6 +34,8 @@ public class UserController extends BaseController {
     }
 
     @GetMapping("/profile")
+    @PreAuthorize("isAuthenticated()")
+    @PageTitle("Profile")
     public ModelAndView profile(ModelAndView modelAndView, Principal principal) {
         //String username = ((UserLoginServiceModel) session.getAttribute("user")).getUsername();
         String username = principal.getName();
@@ -44,6 +47,7 @@ public class UserController extends BaseController {
 
     @GetMapping("/all")
     @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @PageTitle("All Users")
     public ModelAndView allUsers(ModelAndView modelAndView) {
 
         List<UserServiceModel> users = this.userService.getAllUsers()
@@ -59,6 +63,7 @@ public class UserController extends BaseController {
 
     @GetMapping("/edit")
     @PreAuthorize("isAuthenticated()")
+    @PageTitle("Edit Profile")
     public ModelAndView editProfile(Principal principal, ModelAndView modelAndView, @ModelAttribute(name = "model") UserEditModel model) {
         UserServiceModel userServiceModel = this.userService.getByUsername(principal.getName());
         model = this.modelMapper.map(userServiceModel, UserEditModel.class);

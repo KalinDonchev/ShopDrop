@@ -1,5 +1,6 @@
 package com.kalin.shopdrop.web.controllers;
 
+import com.kalin.shopdrop.config.annotations.PageTitle;
 import com.kalin.shopdrop.service.models.ProductServiceModel;
 import com.kalin.shopdrop.service.services.ProductService;
 import com.kalin.shopdrop.web.models.view.ProductViewModel;
@@ -27,12 +28,14 @@ public class HomeController extends BaseController {
 
     @GetMapping("/")
     @PreAuthorize("isAnonymous()")
+    @PageTitle("Index")
     public ModelAndView index() {
         return super.view("index");
     }
 
     @GetMapping("/home")
     @PreAuthorize("isAuthenticated()")
+    @PageTitle("Home")
     public ModelAndView home(ModelAndView modelAndView) {
         List<ProductServiceModel> productServiceModels = this.productService.getAll();
         List<ProductViewModel> viewModels = productServiceModels.stream().map(p -> this.modelMapper.map(p, ProductViewModel.class)).collect(Collectors.toList());

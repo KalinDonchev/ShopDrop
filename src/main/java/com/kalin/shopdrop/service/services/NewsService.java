@@ -13,7 +13,7 @@ public interface NewsService {
 
     List<NewsServiceModel> getAll();
 
-    NewsServiceModel getById(String id) throws NotFoundException;
+    NewsServiceModel getById(String id);
 
     NewsServiceModel editNews(String id, NewsServiceModel newsServiceModel);
 

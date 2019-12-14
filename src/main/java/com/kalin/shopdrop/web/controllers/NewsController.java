@@ -1,5 +1,6 @@
 package com.kalin.shopdrop.web.controllers;
 
+import com.kalin.shopdrop.config.annotations.PageTitle;
 import com.kalin.shopdrop.service.models.NewsServiceModel;
 import com.kalin.shopdrop.service.services.NewsService;
 import com.kalin.shopdrop.web.models.AddNewsModel;
@@ -7,6 +8,7 @@ import com.kalin.shopdrop.web.models.view.NewsViewModel;
 import javassist.NotFoundException;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
@@ -28,11 +30,14 @@ public class NewsController extends BaseController {
     }
 
     @GetMapping("/add")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @PageTitle("Add News")
     public ModelAndView addNews() {
         return super.view("news/add-news");
     }
 
     @PostMapping("/add")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     public ModelAndView addNewsConfirm(@ModelAttribute AddNewsModel addNewsModel) {
         NewsServiceModel newsServiceModel = this.modelMapper.map(addNewsModel, NewsServiceModel.class);
         this.newsService.addNews(newsServiceModel);
@@ -40,6 +45,8 @@ public class NewsController extends BaseController {
     }
 
     @GetMapping("/all")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @PageTitle("All News")
     public ModelAndView allNews(ModelAndView modelAndView) {
         List<NewsServiceModel> news = this.newsService.getAll();
         List<NewsViewModel> models = news.stream().map(n -> this.modelMapper.map(n, NewsViewModel.class)).collect(Collectors.toList());
@@ -48,6 +55,8 @@ public class NewsController extends BaseController {
     }
 
     @GetMapping("/allNews")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @PageTitle("Add News Admin")
     public ModelAndView allNewsModerator(ModelAndView modelAndView) {
         List<NewsServiceModel> news = this.newsService.getAll();
         List<NewsViewModel> models = news.stream().map(n -> this.modelMapper.map(n, NewsViewModel.class)).collect(Collectors.toList());
@@ -56,6 +65,8 @@ public class NewsController extends BaseController {
     }
 
     @GetMapping("/edit/{id}")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @PageTitle("Edit News")
     public ModelAndView editNews(@PathVariable String id, ModelAndView modelAndView) throws NotFoundException {
         NewsServiceModel newsServiceModel = this.newsService.getById(id);
         AddNewsModel news = this.modelMapper.map(newsServiceModel, AddNewsModel.class);
@@ -65,7 +76,8 @@ public class NewsController extends BaseController {
     }
 
     @PostMapping("/edit/{id}")
-    public ModelAndView editNewsConfirm(@PathVariable String id, @ModelAttribute AddNewsModel addNewsModel) throws NotFoundException {
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    public ModelAndView editNewsConfirm(@PathVariable String id, @ModelAttribute AddNewsModel addNewsModel)  {
         NewsServiceModel newsServiceModel = this.modelMapper.map(addNewsModel, NewsServiceModel.class);
         this.newsService.editNews(id, newsServiceModel);
         return super.redirect("/home");
@@ -74,7 +86,9 @@ public class NewsController extends BaseController {
 
 
     @GetMapping("/delete/{id}")
-    public ModelAndView deleteNews(@PathVariable String id, ModelAndView modelAndView) throws NotFoundException {
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @PageTitle("Delete News")
+    public ModelAndView deleteNews(@PathVariable String id, ModelAndView modelAndView) {
         NewsServiceModel newsServiceModel = this.newsService.getById(id);
         AddNewsModel news = this.modelMapper.map(newsServiceModel, AddNewsModel.class);
 
@@ -85,7 +99,8 @@ public class NewsController extends BaseController {
     }
 
     @PostMapping("/delete/{id}")
-    public ModelAndView deleteNewsConfirm(@PathVariable String id) throws NotFoundException {
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    public ModelAndView deleteNewsConfirm(@PathVariable String id)  {
         this.newsService.deleteNews(id);
         return super.redirect("/home");
     }

@@ -1,5 +1,6 @@
 package com.kalin.shopdrop.web.controllers;
 
+import com.kalin.shopdrop.config.annotations.PageTitle;
 import com.kalin.shopdrop.service.models.CategoryServiceModel;
 import com.kalin.shopdrop.service.models.ProductServiceModel;
 import com.kalin.shopdrop.service.models.UserServiceModel;
@@ -13,6 +14,7 @@ import com.kalin.shopdrop.web.models.view.ProductAllViewModel;
 import com.kalin.shopdrop.web.models.view.ProductViewModel;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
@@ -50,6 +52,8 @@ public class ProductController extends BaseController {
     }
 
     @GetMapping("/add")
+    @PreAuthorize("isAuthenticated()")
+    @PageTitle("Add Product")
     public ModelAndView addProduct(ModelAndView modelAndView, @ModelAttribute(name = "model") AddProductModel model) {
         List<CategoryServiceModel> categoryServiceModels = this.categoryService.getAll();
         // CHECK IF NEEDED TO PASS CategoryViewModel to view
@@ -59,6 +63,7 @@ public class ProductController extends BaseController {
     }
 
     @PostMapping("/add")
+    @PreAuthorize("isAuthenticated()")
     public ModelAndView addProductConfirm(ModelAndView modelAndView, @ModelAttribute(name = "model") AddProductModel addProductModel, Principal principal, BindingResult bindingResult) throws IOException {
         this.productAddValidator.validate(addProductModel, bindingResult);
 
@@ -81,6 +86,8 @@ public class ProductController extends BaseController {
     }
 
     @GetMapping("/details/{id}")
+    @PreAuthorize("isAuthenticated()")
+    @PageTitle("Details Product")
     public ModelAndView detailsProduct(@PathVariable String id, ModelAndView modelAndView) {
         ProductViewModel model = this.modelMapper.map(this.productService.getById(id), ProductViewModel.class);
 
@@ -90,6 +97,7 @@ public class ProductController extends BaseController {
     }
 
     @PostMapping("/details/{id}")
+    @PreAuthorize("isAuthenticated()")
     public ModelAndView detailsProductConfirm(@PathVariable String id, @ModelAttribute SendEmailModel sendEmailModel, Principal principal) {
         //String fromUser = ((UserLoginServiceModel) session.getAttribute("user")).getUsername();
         String fromUser = principal.getName();
@@ -102,6 +110,8 @@ public class ProductController extends BaseController {
 
 
     @GetMapping("/all/{username}")
+    @PreAuthorize("isAuthenticated()")
+    @PageTitle("All Products")
     public ModelAndView allProducts(@PathVariable String username, ModelAndView modelAndView) {
         List<ProductServiceModel> productServiceAll = this.productService.getAllByUserUsername(username);
 
@@ -112,6 +122,8 @@ public class ProductController extends BaseController {
     }
 
     @GetMapping("/edit/{id}")
+    @PreAuthorize("isAuthenticated()")
+    @PageTitle("Edit Product")
     public ModelAndView editProduct(@PathVariable String id, ModelAndView modelAndView, @ModelAttribute(name = "model") EditProductModel model) {
         ProductServiceModel productServiceModel = this.productService.getById(id);
         model = this.modelMapper.map(productServiceModel, EditProductModel.class);
@@ -124,6 +136,7 @@ public class ProductController extends BaseController {
     }
 
     @PostMapping("/edit/{id}")
+    @PreAuthorize("isAuthenticated()")
     public ModelAndView editProductConfirm(@PathVariable String id, ModelAndView modelAndView, @ModelAttribute(name = "model") EditProductModel model, BindingResult bindingResult) {
         this.productEditValidator.validate(model, bindingResult);
 
@@ -142,6 +155,8 @@ public class ProductController extends BaseController {
     }
 
     @GetMapping("/delete/{id}")
+    @PreAuthorize("isAuthenticated()")
+    @PageTitle("Delete Product")
     public ModelAndView deleteProduct(@PathVariable String id, ModelAndView modelAndView) {
         ProductServiceModel productServiceModel = this.productService.getById(id);
         AddProductModel product = this.modelMapper.map(productServiceModel, AddProductModel.class);
@@ -154,6 +169,7 @@ public class ProductController extends BaseController {
     }
 
     @PostMapping("/delete/{id}")
+    @PreAuthorize("isAuthenticated()")
     public ModelAndView deleteProductConfirm(@PathVariable String id) {
         this.productService.deleteProduct(id);
         return super.redirect("/home");
