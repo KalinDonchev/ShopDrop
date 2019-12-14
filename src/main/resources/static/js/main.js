@@ -143,12 +143,12 @@ const formatProduct = (product) => {
         + `<h5 class="mt-0 font-weight-bold mb-2">${product.name}</h5>`
         + `<h5 class="font-italic text-muted mb-0 small">${product.description}</h5>`
         + `<div class="d-flex align-items-center justify-content-between mt-1">`
-        + `<h6 class="font-weight-bold my-2"><span>${product.price.toFixed(2)}</h6>`
+        + `<h6 class="font-weight-bold my-2"><span>${product.price.toFixed(2)}$</h6>`
         + `<a class="text-gray" href="/product/all/${product.user}">${product.user}</a>`
         + `</div>`
         + `</div><a id="none" href="/product/details/${product.id}"><img\n` +
         `                                            src="${product.imageUrl}"\n` +
-        `                                            alt="Generic placeholder image" width="200" class="ml-lg-5 order-1 order-lg-2"> </a>`
+        `                                            alt="Generic placeholder image" width="200" height="150" class="ml-lg-5 order-1 order-lg-2"> </a>`
         + `</div>`
 
 };

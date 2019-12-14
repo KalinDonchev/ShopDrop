@@ -31,12 +31,12 @@
                                             <h5 class="mt-0 font-weight-bold mb-2" th:text="${product.name}"></h5>
                                             <p class="font-italic text-muted mb-0 small" th:text="${product.description}"></p>
                                             <div class="d-flex align-items-center justify-content-between mt-1">
-                                                <h6 class="font-weight-bold my-2" th:text="${product.price}"></h6>
+                                                <h6 class="font-weight-bold my-2" th:text="${product.price} + '$'"></h6>
                                                 <a class="text-gray" th:href="@{/product/all/{username}(username=${product.user})}" th:text="${product.user}"></a>
                                             </div>
                                         </div><a id="none" th:href="@{/product/details/{id}(id=${product.id})}"><img
                                             th:src="${product.imageUrl}"
-                                            alt="Generic placeholder image" width="200" class="ml-lg-5 order-1 order-lg-2"> </a>
+                                            alt="Generic placeholder image" width="200" height="150" class="ml-lg-5 order-1 order-lg-2"> </a>
                                     </div>
                                 </li>
                             </th:block>
