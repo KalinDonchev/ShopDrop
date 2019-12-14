@@ -12,7 +12,7 @@
         </header>
         <main>
             <div class="signup-form">
-                <form th:action="@{/auth/login}" th:method="post">
+                <form th:action="@{/auth/login}" th:method="post"><input type="hidden" name="_csrf" value="c95ccb2b-1afa-47bd-bf7b-a5b72739470b">
                     <h2>Login</h2>
                     <p class="hint-text">Please Login</p>
                     <div class="form-group">
