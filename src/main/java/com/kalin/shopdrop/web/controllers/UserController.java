@@ -81,7 +81,7 @@ public class UserController extends BaseController {
         UserServiceModel userServiceModel = this.modelMapper.map(model, UserServiceModel.class);
         this.userService.editProfile(userServiceModel, model.getOldPassword());
 
-        return super.redirect("/users/profile");
+        return super.redirect("/user/profile");
     }
 
     @PostMapping("/set-admin/{id}")

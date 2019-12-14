@@ -37,11 +37,11 @@ public class UserEditValidator implements org.springframework.validation.Validat
 
     @Override
     public void validate(Object o, Errors errors) {
-        UserEditModel userEditBindingModel = (UserEditModel) o;
+        UserEditModel userEditModel = (UserEditModel) o;
 
-        User user = this.userRepository.findByUsername(userEditBindingModel.getUsername()).orElseThrow(() -> new UserNotFoundException("No such user"));
+        User user = this.userRepository.findByUsername(userEditModel.getUsername()).orElseThrow(() -> new UserNotFoundException("No such user"));
 
-        if (!this.passwordEncoder.matches(userEditBindingModel.getOldPassword(), user.getPassword())) {
+        if (!this.passwordEncoder.matches(userEditModel.getOldPassword(), user.getPassword())) {
             errors.rejectValue(
                     "oldPassword",
                     ValidationConstants.WRONG_PASSWORD,
@@ -49,7 +49,7 @@ public class UserEditValidator implements org.springframework.validation.Validat
             );
         }
 
-        if (userEditBindingModel.getPassword() != null && !userEditBindingModel.getPassword().equals(userEditBindingModel.getConfirmPassword())) {
+        if (userEditModel.getPassword() != null && !userEditModel.getPassword().equals(userEditModel.getConfirmPassword())) {
             errors.rejectValue(
                     "password",
                     ValidationConstants.PASSWORDS_DO_NOT_MATCH,
@@ -57,7 +57,7 @@ public class UserEditValidator implements org.springframework.validation.Validat
             );
         }
 
-        if (userEditBindingModel.getPassword().length() < 6){
+        if (userEditModel.getPassword().length() < 6){
             errors.rejectValue(
                     "password",
                     ValidationConstants.PASSWORD_LENGTH,
@@ -65,7 +65,7 @@ public class UserEditValidator implements org.springframework.validation.Validat
             );
         }
 
-        if (!isEmailValid(userEditBindingModel.getEmail())){
+        if (!isEmailValid(userEditModel.getEmail())){
             errors.rejectValue(
                     "email",
                     ValidationConstants.EMAIL_NOT_VALID,
@@ -73,11 +73,11 @@ public class UserEditValidator implements org.springframework.validation.Validat
             );
         }
 
-        if (!user.getEmail().equals(userEditBindingModel.getEmail()) && this.userRepository.findByEmail(userEditBindingModel.getEmail()).isPresent()) {
+        if (!user.getEmail().equals(userEditModel.getEmail()) && this.userRepository.findByEmail(userEditModel.getEmail()).isPresent()) {
             errors.rejectValue(
                     "email",
-                    String.format(ValidationConstants.EMAIL_EXISTS, userEditBindingModel.getEmail()),
-                    String.format(ValidationConstants.EMAIL_EXISTS, userEditBindingModel.getEmail())
+                    String.format(ValidationConstants.EMAIL_EXISTS, userEditModel.getEmail()),
+                    String.format(ValidationConstants.EMAIL_EXISTS, userEditModel.getEmail())
             );
         }
     }

@@ -131,7 +131,7 @@ public class ProductController extends BaseController {
             modelAndView.addObject("productId", id);
             modelAndView.addObject("model", model);
 
-            return super.view("category/edit-category", modelAndView);
+            return super.view("product/edit-product", modelAndView);
         }
 
         ProductServiceModel productServiceModel = this.modelMapper.map(model, ProductServiceModel.class);
