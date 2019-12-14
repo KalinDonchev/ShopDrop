@@ -23,4 +23,6 @@ public interface ProductService {
 
     List<ProductServiceModel> getAllByUserUsername(String username);
 
+    Long getProductsSize();
+
 }

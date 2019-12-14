@@ -1,24 +1,19 @@
 package com.kalin.shopdrop.service.services.impl;
 
-import com.kalin.shopdrop.data.models.Role;
 import com.kalin.shopdrop.data.models.User;
 import com.kalin.shopdrop.data.repositories.UserRepository;
-import com.kalin.shopdrop.service.models.RoleServiceModel;
-import com.kalin.shopdrop.service.models.UserLoginServiceModel;
+import com.kalin.shopdrop.service.models.LogServiceModel;
 import com.kalin.shopdrop.service.models.UserServiceModel;
 import com.kalin.shopdrop.service.services.AuthService;
 import com.kalin.shopdrop.service.services.HashingService;
+import com.kalin.shopdrop.service.services.LogService;
 import com.kalin.shopdrop.service.services.RoleService;
-import javassist.NotFoundException;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
 import java.util.LinkedHashSet;
-import java.util.List;
-import java.util.Set;
-import java.util.stream.Collectors;
 
 @Service
 public class AuthServiceImpl implements AuthService {
@@ -27,14 +22,16 @@ public class AuthServiceImpl implements AuthService {
     private final UserRepository userRepository;
     private final HashingService hashingService;
     private final RoleService roleService;
+    private final LogService logService;
 
 
     @Autowired
-    public AuthServiceImpl(ModelMapper modelMapper, UserRepository userRepository, HashingService hashingService, RoleService roleService) {
+    public AuthServiceImpl(ModelMapper modelMapper, UserRepository userRepository, HashingService hashingService, RoleService roleService, LogService logService) {
         this.modelMapper = modelMapper;
         this.userRepository = userRepository;
         this.hashingService = hashingService;
         this.roleService = roleService;
+        this.logService = logService;
     }
 
 
@@ -57,6 +54,12 @@ public class AuthServiceImpl implements AuthService {
 
 
         user.setPassword(this.hashingService.hash(user.getPassword()));
+
+        LogServiceModel logServiceModel = new LogServiceModel();
+        logServiceModel.setDescription("User registered");
+        logServiceModel.setTime(LocalDateTime.now());
+
+        this.logService.seedLogInDB(logServiceModel);
 
         this.userRepository.saveAndFlush(user);
 

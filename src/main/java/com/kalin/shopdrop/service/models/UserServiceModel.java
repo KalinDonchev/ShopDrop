@@ -3,9 +3,9 @@ package com.kalin.shopdrop.service.models;
 import java.util.List;
 import java.util.Set;
 
-public class UserServiceModel {
+public class UserServiceModel extends BaseServiceModel {
 
-    private String id;
+
     private String username;
     private String email;
     private String password;
@@ -18,13 +18,6 @@ public class UserServiceModel {
     public UserServiceModel() {
     }
 
-    public String getId() {
-        return id;
-    }
-
-    public void setId(String id) {
-        this.id = id;
-    }
 
     public String getUsername() {
         return username;

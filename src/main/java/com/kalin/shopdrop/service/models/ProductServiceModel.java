@@ -2,9 +2,9 @@ package com.kalin.shopdrop.service.models;
 
 import java.math.BigDecimal;
 
-public class ProductServiceModel {
+public class ProductServiceModel extends BaseServiceModel {
 
-    private String id;
+
     private String name;
     private String description;
     private BigDecimal price;
@@ -16,13 +16,6 @@ public class ProductServiceModel {
     public ProductServiceModel() {
     }
 
-    public String getId() {
-        return id;
-    }
-
-    public void setId(String id) {
-        this.id = id;
-    }
 
     public String getName() {
         return name;

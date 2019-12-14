@@ -1,22 +1,14 @@
-package com.kalin.shopdrop.data.models;
+package com.kalin.shopdrop.service.models;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Table;
 import java.time.LocalDateTime;
 
-@Entity
-@Table(name = "logs")
-public class Log extends BaseEntity{
+public class LogServiceModel extends BaseServiceModel {
 
-    @Column
     private Long productsCount;
-    @Column
     private String description;
-    @Column
     private LocalDateTime time;
 
-    public Log() {
+    public LogServiceModel() {
     }
 
     public Long getProductsCount() {

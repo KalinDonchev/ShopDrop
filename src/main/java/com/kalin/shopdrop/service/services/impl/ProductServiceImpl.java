@@ -3,23 +3,24 @@ package com.kalin.shopdrop.service.services.impl;
 import com.kalin.shopdrop.data.models.Category;
 import com.kalin.shopdrop.data.models.Product;
 import com.kalin.shopdrop.data.models.User;
-import com.kalin.shopdrop.data.repositories.CategoryRepository;
 import com.kalin.shopdrop.data.repositories.ProductRepository;
 import com.kalin.shopdrop.errors.ProductAlreadyExistsException;
 import com.kalin.shopdrop.errors.ProductNotFoundException;
 import com.kalin.shopdrop.service.models.CategoryServiceModel;
+import com.kalin.shopdrop.service.models.LogServiceModel;
 import com.kalin.shopdrop.service.models.ProductServiceModel;
 import com.kalin.shopdrop.service.models.UserServiceModel;
 import com.kalin.shopdrop.service.services.CategoryService;
+import com.kalin.shopdrop.service.services.LogService;
 import com.kalin.shopdrop.service.services.ProductService;
 import com.kalin.shopdrop.service.services.UserService;
-import javassist.NotFoundException;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -30,13 +31,15 @@ public class ProductServiceImpl implements ProductService {
     private final CategoryService categoryService;
     private final UserService userService;
     private final ModelMapper modelMapper;
+    private final LogService logService;
 
     @Autowired
-    public ProductServiceImpl(ProductRepository productRepository, CategoryService categoryService, @Lazy UserService userService, ModelMapper modelMapper) {
+    public ProductServiceImpl(ProductRepository productRepository, CategoryService categoryService, @Lazy UserService userService, ModelMapper modelMapper, LogService logService) {
         this.productRepository = productRepository;
         this.categoryService = categoryService;
         this.userService = userService;
         this.modelMapper = modelMapper;
+        this.logService = logService;
     }
 
     @Override
@@ -54,6 +57,12 @@ public class ProductServiceImpl implements ProductService {
         UserServiceModel userServiceModel = this.userService.getByUsername(productServiceModel.getUser());
         product.setUser(this.modelMapper.map(userServiceModel, User.class));
         this.productRepository.saveAndFlush(product);
+
+        LogServiceModel logServiceModel = new LogServiceModel();
+        logServiceModel.setDescription("Product added");
+        logServiceModel.setTime(LocalDateTime.now());
+
+        this.logService.seedLogInDB(logServiceModel);
 
         return this.modelMapper.map(product, ProductServiceModel.class);
     }
@@ -74,6 +83,13 @@ public class ProductServiceImpl implements ProductService {
     @Override
     public void deleteProduct(String id) {
         Product product = this.productRepository.findById(id).orElseThrow(() -> new ProductNotFoundException("No such product"));
+
+        LogServiceModel logServiceModel = new LogServiceModel();
+        logServiceModel.setDescription("Product deleted");
+        logServiceModel.setTime(LocalDateTime.now());
+
+        this.logService.seedLogInDB(logServiceModel);
+
         this.productRepository.delete(product);
     }
 
@@ -117,6 +133,11 @@ public class ProductServiceImpl implements ProductService {
         UserServiceModel userServiceModel = this.userService.getByUsername(username);
         List<ProductServiceModel> products = userServiceModel.getProducts();
         return products;
+    }
+
+    @Override
+    public Long getProductsSize() {
+        return this.productRepository.count();
     }
 
 
