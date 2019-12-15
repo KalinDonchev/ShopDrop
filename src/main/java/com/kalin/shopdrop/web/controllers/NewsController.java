@@ -45,7 +45,7 @@ public class NewsController extends BaseController {
     }
 
     @GetMapping("/all")
-    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @PreAuthorize("isAuthenticated()")
     @PageTitle("All News")
     public ModelAndView allNews(ModelAndView modelAndView) {
         List<NewsServiceModel> news = this.newsService.getAll();
